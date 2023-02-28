@@ -35,7 +35,10 @@ export class AuthService {
     return this.generateAccessToken(user);
   }
 
-  async verify (user: IUser): Promise<IAccessToken> {
+  async verify (user?: IUser): Promise<IAccessToken> {
+    if (!user) {
+      throw new Error('No user object in request');
+    }
     return this.generateAccessToken(user);
   }
 
@@ -58,8 +61,8 @@ export class AuthService {
 
   generateAccessToken (user: IUser): IAccessToken {
     const expiresIn = Environment.getAccessTokenExpIn();
-    const accessToken = sign(user, Environment.getAccessTokenSecret(), { expiresIn });
-    const refreshToken = sign(user, Environment.getRefreshTokenSecret(), {
+    const accessToken = sign({ ...user }, Environment.getAccessTokenSecret(), { expiresIn });
+    const refreshToken = sign({ ...user }, Environment.getRefreshTokenSecret(), {
       expiresIn: Environment.getAccessRefreshTokenExpIn()
     });
 

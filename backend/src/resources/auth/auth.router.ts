@@ -30,13 +30,13 @@ export function AuthRouter ({ authController }: { authController: AuthController
     passport.authenticate('local', {
       successRedirect: '/auth/login/verify',
       failureRedirect: '/auth/login/error',
-      failureFlash: true
+      failureMessage: true
     })
   );
 
   router.post('/login/test', validateBody(LoginPayloadSchema), RequestHandler(authController.login));
   router.get('/login/verify', RequestHandler(authController.verify));
-  router.get('/login/error', async (req, res) => res.status(HttpCodes.NotFound).send(dro.error('Authentication error')));
+  router.get('/login/error', async (req, res) => res.status(HttpCodes.NotFound).send(dro.error('Username or password is incorrect')));
 
   /**
    * @swagger

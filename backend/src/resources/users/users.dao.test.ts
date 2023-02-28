@@ -20,6 +20,9 @@ describe('users-dao', () => {
     select: (payload: any): any => MockMongooseModel.mockSelect(payload)
   }));
   MockMongooseModel.mockCreate.mockReturnValue(Promise.resolve(mockUser));
+  MockMongooseModel.mockFindOneAndUpdate.mockImplementation(() => ({
+    exec: (): any => MockMongooseModel.mockExec()
+  }));
   MockMongooseModel.mockFindOneAndDelete.mockImplementation(() => ({
     exec: (): any => MockMongooseModel.mockExec()
   }));
@@ -52,7 +55,7 @@ describe('users-dao', () => {
   describe('get', () => {
     it('should successfully get user', async () => {
       const user = await usersDao.get(mockUser._id);
-      expect(MockMongooseModel.mockFindById).toHaveBeenCalled();
+      expect(MockMongooseModel.mockFindOne).toHaveBeenCalled();
       expect(user).toEqual(mockUser);
     });
 
@@ -172,7 +175,7 @@ describe('users-dao', () => {
   describe('delete', () => {
     it('should successfully delete user', async () => {
       const deletedUserId = await usersDao.delete('user-id');
-      expect(MockMongooseModel.mockFindOneAndDelete).toHaveBeenCalled();
+      expect(MockMongooseModel.mockFindOneAndUpdate).toHaveBeenCalled();
       expect(deletedUserId).toEqual('user-id');
     });
 

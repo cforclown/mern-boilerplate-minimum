@@ -3,6 +3,7 @@
 import { Environment } from '../common';
 import express, { Express } from 'express';
 import logger from 'morgan';
+import cookieParser from 'cookie-parser';
 import expressFlash from 'express-flash';
 import expressSession from 'express-session';
 import cors from 'cors';
@@ -19,14 +20,16 @@ function App (): Express {
   const app = express();
   app.use(logger('dev'));
   app.use(express.json({ limit: '10mb' }));
-  app.use(express.urlencoded({ limit: '10mb', extended: true }));
+  app.use(express.urlencoded({ limit: '10mb', extended: false }));
   app.use(
     cors({
-      origin: Environment.getAppHost(),
+      // origin: Environment.getAppHost(),
+      origin: 'http://localhost:3001',
       credentials: true
     })
   );
   app.use(expressFlash());
+  app.use(cookieParser());
   app.use(
     expressSession({
       secret: Environment.getSessionSecret(),

@@ -5,9 +5,6 @@ export const UsersModel = new Schema({
   password: { type: String, required: true },
   fullname: { type: String, required: true },
   email: { type: String, required: false, default: null },
-  nipp: { type: String, required: true },
-  resor: { type: Schema.Types.ObjectId, required: true, ref: 'resors' },
-  role: { type: Schema.Types.ObjectId, required: true, ref: 'roles' },
   avatar: {
     type: {
       data: { type: String, required: true },

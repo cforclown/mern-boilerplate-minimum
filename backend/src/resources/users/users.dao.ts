@@ -11,23 +11,23 @@ export class UsersDao {
   }
 
   async authenticate ({ username, password }: ILoginPayload): Promise<IUser | null> {
-    return this.usersModel.findOne({ username, password }).select('-password').exec();
+    return this.usersModel.findOne({ username, password, archived: false }).select('-password').exec();
   }
 
   async get (userId: string): Promise<IUser | null> {
-    return this.usersModel.findById(userId).select('-password').exec();
+    return this.usersModel.findOne({ _id: userId, archived: false }).select('-password').exec();
   }
 
   async getByUsername (username: string): Promise<IUser | null> {
-    return this.usersModel.findOne({ username }).select('-password').exec();
+    return this.usersModel.findOne({ username, archived: false }).select('-password').exec();
   }
 
   async getByEmail (email: string): Promise<IUser | null> {
-    return this.usersModel.findOne({ email }).select('-password').exec();
+    return this.usersModel.findOne({ email, archived: false }).select('-password').exec();
   }
 
   async getAll (): Promise<IUser[]> {
-    return this.usersModel.find({}).exec();
+    return this.usersModel.find({ archived: false }).exec();
   }
 
   async create (payload: ICreateUserPayload): Promise<IUser> {
@@ -49,7 +49,7 @@ export class UsersDao {
   }
 
   async delete (userId: string): Promise<string> {
-    const deletedUser = await this.usersModel.findOneAndDelete({ _id: userId }).exec();
+    const deletedUser = await this.usersModel.findOneAndUpdate({ _id: userId }, { archived: true }).exec();
     if (!deletedUser) {
       throw new RestApiException('User not found', HttpCodes.NotFound);
     }
