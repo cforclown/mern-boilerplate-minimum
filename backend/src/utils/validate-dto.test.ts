@@ -1,6 +1,6 @@
 import { mockRequest, mockResponse } from 'jest-mock-req-res';
 import { validateBody, validateParams, validateQuery } from './validate-dto';
-import { HttpCodes } from '../exceptions';
+import { HttpCodes } from './exceptions';
 import { LoginPayloadSchema } from '../resources/auth/auth.dto';
 import { ObjectIdSchema } from '../schemas/common-schema';
 

@@ -1,5 +1,5 @@
 import { validateSchema } from '../../utils/validate-schema';
-import { ValidationException } from '../../exceptions/validation-exception';
+import { ValidationException } from '../../utils/exceptions/validation-exception';
 import { LoginPayloadSchema, RefreshTokenPayloadSchema } from './auth.dto';
 import { ILoginPayload } from './auth.types';
 

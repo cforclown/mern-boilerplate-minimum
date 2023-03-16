@@ -1,5 +1,5 @@
 import { mockRequest, mockResponse } from 'jest-mock-req-res';
-import { HttpCodes } from '../exceptions';
+import { HttpCodes } from './exceptions';
 import { checkAuthorization } from './check-authorization';
 
 describe('check-authorization', () => {

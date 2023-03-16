@@ -1,6 +1,6 @@
 import { ICreateUserPayload, IUpdateUserPayload, IUser, UsersDao } from '.';
 import { ILoginPayload } from '../auth';
-import { RestApiException } from '../../exceptions';
+import { RestApiException } from '../../utils/exceptions';
 import { hashPassword } from '../../utils';
 
 export class UsersService {

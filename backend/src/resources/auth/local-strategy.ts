@@ -1,7 +1,7 @@
 import { PassportStatic } from 'passport';
 import passportLocal from 'passport-local';
 import { AuthService, IUser } from '../';
-import { RestApiException } from '../../exceptions';
+import { RestApiException } from '../../utils/exceptions';
 
 export function InitLocalStrategy (passport: PassportStatic, authService: AuthService): void {
   passport.use(new passportLocal.Strategy(async (username: string, password: string, done) => {

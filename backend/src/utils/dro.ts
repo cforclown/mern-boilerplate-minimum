@@ -1,4 +1,4 @@
-import { Response } from '../types';
+import { Response } from './types';
 
 /**
  * DATA RESPONSE OBJECT

@@ -1,5 +1,5 @@
 import { RequestHandler } from './request-handler';
-import { HttpCodes, RestApiException } from '../exceptions';
+import { HttpCodes, RestApiException } from './exceptions';
 import { mockRequest, mockResponse } from 'jest-mock-req-res';
 
 describe('request-handler', () => {

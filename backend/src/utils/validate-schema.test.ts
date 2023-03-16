@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { validateSchema } from './validate-schema';
-import { ValidationException } from '../exceptions';
+import { ValidationException } from './exceptions';
 
 describe('validateSchema', () => {
   const schema1 = Joi.object({

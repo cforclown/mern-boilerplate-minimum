@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { dro } from './dro';
-import { HttpCodes, RestApiException } from '../exceptions';
-import { saveErrorLog } from '../common';
+import { HttpCodes, RestApiException } from './exceptions';
+import { saveErrorLog } from './common';
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from 'jsonwebtoken';
 
 export function RequestHandler (event: (req: Request, res: Response, next: NextFunction) => Promise<any>) {

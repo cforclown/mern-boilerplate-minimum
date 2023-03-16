@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { UsersService } from './users.service';
 import { IUser } from './users.types';
-import { HttpCodes, RestApiException } from '../../exceptions';
+import { HttpCodes, RestApiException } from '../../utils/exceptions';
 
 export class UsersController {
   private readonly usersService: UsersService;

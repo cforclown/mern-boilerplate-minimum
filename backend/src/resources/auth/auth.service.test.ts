@@ -1,4 +1,4 @@
-import { RestApiException } from '../../exceptions';
+import { RestApiException } from '../../utils/exceptions';
 import { UsersDao, UsersService } from '../users';
 import { AuthService } from './auth.service';
 import { IAccessToken } from './auth.types';

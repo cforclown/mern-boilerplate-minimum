@@ -1,7 +1,7 @@
 import { Schema, ValidationOptions } from 'joi';
 import { NextFunction, Request, Response } from 'express';
 import { dro } from './dro';
-import { HttpCodes } from '../exceptions';
+import { HttpCodes } from './exceptions';
 
 export function validateDto ({
   source,

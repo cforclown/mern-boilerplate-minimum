@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError, verify } from 'jsonwebtoken';
-import { Environment, Logger } from '../../common';
-import { HttpCodes } from '../../exceptions';
+import { Environment, Logger } from '../../utils/common';
+import { HttpCodes } from '../../utils/exceptions';
 import { dro } from '../../utils';
 
 export function authenticateRequest (excludePaths: string[]) {

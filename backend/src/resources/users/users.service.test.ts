@@ -1,6 +1,6 @@
 import { UsersDao } from '.';
 import { mockCreateUserPayload, mockUpdateUserPayload, mockUser } from '../../test/mockData';
-import { RestApiException } from '../../exceptions';
+import { RestApiException } from '../../utils/exceptions';
 import { UsersService } from './users.service';
 
 const mockUsersDaoAuthenticate = jest.fn();

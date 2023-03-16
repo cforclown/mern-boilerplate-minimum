@@ -1,5 +1,5 @@
 import { ObjectSchema, ValidationOptions } from 'joi';
-import { ValidationException } from '../exceptions';
+import { ValidationException } from './exceptions';
 
 export const validateSchema = <T>({
   schema, payload, validationOptions: validateOptions, replaceSource

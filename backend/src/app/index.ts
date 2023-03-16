@@ -1,6 +1,6 @@
 'use strict';
 
-import { Environment } from '../common';
+import { Environment } from '../utils/common';
 import express, { Express } from 'express';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';

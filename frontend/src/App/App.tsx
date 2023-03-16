@@ -7,7 +7,6 @@ import { selectTheme } from '../Store/Selectors/ThemeSelector';
 import Loader from '../Components/Loader/Loader.style';
 import Page404 from '../Pages/404/Page404.style';
 import AuthPage from '../Pages/Authentication';
-
 import storageService from '../Utils/storage-service';
 import { SetAccessToken } from '../Store/Reducers/UserContext/UserContextActions';
 import { IAppState } from '../Store';
@@ -21,7 +20,7 @@ export const AppBase = ({ className }: IApp): React.ReactElement => {
   const theme = useSelector(selectTheme);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const storage = storageService('session');
+  const storage = storageService('local');
 
   useEffect(() => {
     if (userContext) {

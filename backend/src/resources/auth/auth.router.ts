@@ -1,7 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import { dro, RequestHandler, validateBody } from '../../utils';
-import { HttpCodes } from '../../exceptions';
+import { HttpCodes } from '../../utils/exceptions';
 import { LoginPayloadSchema, RefreshTokenPayloadSchema, RegisterPayloadSchema } from '.';
 import { AuthController } from './auth.controller';
 

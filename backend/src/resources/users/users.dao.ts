@@ -1,5 +1,5 @@
 import { model, Model } from 'mongoose';
-import { HttpCodes, RestApiException } from '../../exceptions';
+import { HttpCodes, RestApiException } from '../../utils/exceptions';
 import { ICreateUserPayload, IUpdateUserPayload, IUser } from './users.types';
 import { ILoginPayload } from '../auth';
 

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Environment } from '../common';
+import { Environment } from '../utils/common';
 import { UsersModel } from '../resources';
 
 class Database {

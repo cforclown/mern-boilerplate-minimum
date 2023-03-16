@@ -1,5 +1,5 @@
 import { model } from 'mongoose';
-import { Logger } from '../common';
+import { Logger } from '../utils/common';
 import Database from '../database';
 import { admin, adminRole } from './initial-data';
 

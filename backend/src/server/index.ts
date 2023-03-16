@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync } from 'fs';
 import App from '../app';
 import Database from '../database';
-import { Environment, Logger } from '../common';
+import { Environment, Logger } from '../utils/common';
 
 export default class Server {
   async start (): Promise<void> {

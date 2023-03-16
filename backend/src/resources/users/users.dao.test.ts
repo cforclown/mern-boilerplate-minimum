@@ -1,5 +1,5 @@
 import { UsersDao } from '.';
-import { RestApiException } from '../../exceptions';
+import { RestApiException } from '../../utils/exceptions';
 import { mockCreateUserPayload, mockUpdateUserPayload, mockUser } from '../../test/mockData';
 import { MockMongooseModel } from '../../test/mockMongooseModel';
 

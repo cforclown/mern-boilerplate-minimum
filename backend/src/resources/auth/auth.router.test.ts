@@ -2,7 +2,7 @@ import request from 'supertest';
 import { setup } from '../../di-config';
 import App from '../../app';
 import { mockRegisterUserPayload, mockUser } from '../../test/mockData';
-import { HttpCodes } from '../../exceptions';
+import { HttpCodes } from '../../utils/exceptions';
 import { IAccessToken } from './auth.types';
 
 const mockJWTSign = jest.fn();

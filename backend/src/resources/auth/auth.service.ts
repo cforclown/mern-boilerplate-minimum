@@ -1,8 +1,8 @@
 import { sign, verify } from 'jsonwebtoken';
 import { IAccessToken, ILoginPayload, IRegisterUserPayload } from '.';
 import { IUser, UsersService } from '..';
-import { Environment } from '../../common';
-import { HttpCodes, RestApiException } from '../../exceptions';
+import { Environment } from '../../utils/common';
+import { HttpCodes, RestApiException } from '../../utils/exceptions';
 
 export class AuthService {
   usersService: UsersService;
