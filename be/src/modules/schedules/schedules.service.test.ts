@@ -1,5 +1,5 @@
-import { SchedulesDao } from '.';
-import { mockCreateSchedulePayload, mockSchedule, mockUpdateSchedulePayload } from '../../test/mock-data';
+import { container, setup } from '../../di-config';
+import { mockCreateSchedulePayload, mockSchedule, mockUpdateSchedulePayload } from '../../test/mock-schedules-data';
 import { SchedulesService } from './schedules.service';
 
 const mockSchedulesDaoGet = jest.fn();
@@ -29,8 +29,11 @@ describe('schedules-service', () => {
   mockSchedulesDaoGetUpdate.mockReturnValue(Promise.resolve(mockSchedule));
   mockSchedulesDaoGetDelete.mockImplementation((payload) => Promise.resolve(payload));
 
-  const schedulesService = new SchedulesService({
-    schedulesDao: new SchedulesDao()
+  let schedulesService: SchedulesService;
+
+  beforeAll(() => {
+    setup();
+    schedulesService = container.resolve(SchedulesService.INSTANCE_NAME);
   });
 
   afterEach(() => {

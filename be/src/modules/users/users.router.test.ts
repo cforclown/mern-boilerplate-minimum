@@ -1,8 +1,9 @@
 import request from 'supertest';
 import { container, setup } from '../../di-config';
-import { mockUpdateUserPayload, mockUser } from '../../test/mockData';
+import { mockUpdateUserPayload, mockUser } from '../../test/mock-users-data';
 import { RestApiException } from '../../utils/exceptions';
 import { HttpStatusCode } from 'axios';
+import { Environment } from '../../utils';
 
 const mockJWTVerify = jest.fn();
 jest.mock('jsonwebtoken', () => ({
@@ -47,9 +48,9 @@ describe('users-router', () => {
   mockUsersDaoGetUpdate.mockReturnValue(Promise.resolve(mockUser));
   mockUsersDaoGetDelete.mockImplementation((payload) => Promise.resolve(payload));
 
-  let app: any;
-
   mockJWTVerify.mockReturnValue(mockUser);
+
+  let app: any;
 
   beforeAll(() => {
     setup();
@@ -63,7 +64,7 @@ describe('users-router', () => {
   describe('get', () => {
     it('should successfully return user', async () => {
       const response = await request(app)
-        .get(`/api/users/${mockUser.id}`)
+        .get(`/api/${Environment.getApiVersion()}/users/${mockUser.id}`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .expect(HttpStatusCode.Ok);
 
@@ -76,7 +77,7 @@ describe('users-router', () => {
     it('should return 404 when user not found', async () => {
       mockUsersDaoGet.mockReturnValueOnce(Promise.resolve(null));
       await request(app)
-        .get(`/api/users/${mockUser.id}`)
+        .get(`/api/${Environment.getApiVersion()}/users/${mockUser.id}`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .expect(HttpStatusCode.NotFound);
     });
@@ -85,7 +86,7 @@ describe('users-router', () => {
   describe('getAll', () => {
     it('should successfully get all users', async () => {
       const response = await request(app)
-        .get('/api/users')
+        .get(`/api/${Environment.getApiVersion()}/users`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .expect(HttpStatusCode.Ok);
       expect(response).toHaveProperty('text');
@@ -98,7 +99,7 @@ describe('users-router', () => {
       mockUsersDaoGetAll.mockReturnValueOnce(Promise.resolve([]));
 
       const response = await request(app)
-        .get('/api/users')
+        .get(`/api/${Environment.getApiVersion()}/users`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .expect(HttpStatusCode.Ok);
       expect(response).toHaveProperty('text');
@@ -111,7 +112,7 @@ describe('users-router', () => {
       mockUsersDaoGetAll.mockRejectedValueOnce(new Error('error'));
 
       await request(app)
-        .get('/api/users')
+        .get(`/api/${Environment.getApiVersion()}/users`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .expect(HttpStatusCode.InternalServerError);
     });
@@ -120,7 +121,7 @@ describe('users-router', () => {
   describe('update', () => {
     it('should successfully update user', async () => {
       const response = await request(app)
-        .patch('/api/users')
+        .patch(`/api/${Environment.getApiVersion()}/users`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .send(mockUpdateUserPayload)
         .expect(HttpStatusCode.Ok);
@@ -132,10 +133,9 @@ describe('users-router', () => {
 
     it('should successfully update user when only some of the field is provided', async () => {
       const response = await request(app)
-        .patch('/api/users')
+        .patch(`/api/${Environment.getApiVersion()}/users`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .send({
-          id: 'user-id',
           username: 'new-username'
         })
         .expect(HttpStatusCode.Ok);
@@ -148,7 +148,7 @@ describe('users-router', () => {
     it('should fail update user when user not found', async () => {
       mockUsersDaoGet.mockReturnValueOnce(Promise.resolve(null));
       await request(app)
-        .patch('/api/users')
+        .patch(`/api/${Environment.getApiVersion()}/users`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .send(mockUpdateUserPayload)
         .expect(HttpStatusCode.BadRequest);
@@ -157,7 +157,7 @@ describe('users-router', () => {
     it('should fail update user when given username is taken', async () => {
       mockUsersDaoGetByUsername.mockReturnValueOnce(Promise.resolve(mockUser));
       await request(app)
-        .patch('/api/users')
+        .patch(`/api/${Environment.getApiVersion()}/users`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .send(mockUpdateUserPayload)
         .expect(HttpStatusCode.BadRequest);
@@ -166,7 +166,7 @@ describe('users-router', () => {
     it('should fail update user when given email already registered', async () => {
       mockUsersDaoGetByEmail.mockReturnValueOnce(Promise.resolve(mockUser));
       await request(app)
-        .patch('/api/users')
+        .patch(`/api/${Environment.getApiVersion()}/users`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .send(mockUpdateUserPayload)
         .expect(HttpStatusCode.BadRequest);
@@ -176,7 +176,7 @@ describe('users-router', () => {
   describe('delete', () => {
     it('should successfully delete a user', async () => {
       const response = await request(app)
-        .delete('/api/users/' + mockUser.id)
+        .delete(`/api/${Environment.getApiVersion()}/users/${mockUser.id}`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .expect(HttpStatusCode.Ok);
       expect(response).toHaveProperty('text');
@@ -188,7 +188,7 @@ describe('users-router', () => {
     it('should throw an error when data access object throw an error', async () => {
       mockUsersDaoGetDelete.mockRejectedValueOnce(new RestApiException('internal server error', 500));
       await request(app)
-        .delete('/api/users/' + mockUser.id)
+        .delete(`/api/${Environment.getApiVersion()}/users/${mockUser.id}`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .expect(HttpStatusCode.InternalServerError);
     });

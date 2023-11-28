@@ -60,18 +60,18 @@ export class UsersService {
   }
 
   async changePassword (userId: string, payload: IChangePasswordPayload): Promise<IUser> {
-    const user = await this.usersDao.get(userId);
+    const user = await this.usersDao.get(userId, { withPassword: true });
     if (!user) {
       throw new RestApiException('User not found');
     }
     if (user.password !== (await hashPassword(payload.currentPassword))) {
-      throw new RestApiException('Password does not match');
-    }
-    if (payload.newPassword !== payload.confirmNewPassword) {
-      throw new RestApiException('New password and confirmation password is does not match');
+      throw new RestApiException('Invalid password');
     }
 
-    return this.usersDao.update({ id: user._id, password: (await hashPassword(payload.newPassword)) });
+    return this.usersDao.update({
+      id: user._id,
+      password: (await hashPassword(payload.newPassword))
+    });
   }
 
   delete (userId: string): Promise<string> {

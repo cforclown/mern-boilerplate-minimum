@@ -4,6 +4,11 @@ import { RestApiException } from '../../utils';
 import { ICreateUserPayload, IUpdateUserPayload, IUser } from './users.types';
 import { ILoginPayload } from '../auth';
 
+interface IUserQueryParams {
+  withPassword?: boolean;
+  plain?: boolean;
+}
+
 export class UsersDao {
   public static readonly INSTANCE_NAME = 'usersDao';
   private readonly model: Model<IUser>;
@@ -23,8 +28,10 @@ export class UsersDao {
     }).select('-password').exec();
   }
 
-  async get (userId: string): Promise<IUser | null> {
-    return this.model.findOne({ _id: userId, archived: false }).select('-password').exec();
+  async get (userId: string, params?: IUserQueryParams): Promise<IUser | null> {
+    return params?.withPassword
+      ? this.model.findOne({ _id: userId, archived: false }).exec()
+      : this.model.findOne({ _id: userId, archived: false }).select('-password').exec();
   }
 
   async getByUsername (username: string): Promise<IUser | null> {

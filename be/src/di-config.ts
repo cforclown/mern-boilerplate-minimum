@@ -40,10 +40,10 @@ export function setup (): void {
     [USERS_ROUTER_INSTANCE_NAME]: asFunction(UsersRouter),
     [UsersController.INSTANCE_NAME]: asClass(UsersController),
     [UsersService.INSTANCE_NAME]: asClass(UsersService),
-    [UsersDao.INSTANCE_NAME]: asClass(UsersDao),
+    usersDao: asClass(UsersDao),
     [SCHEDULES_ROUTER_INSTANCE_NAME]: asFunction(SchedulesRouter),
     [SchedulesController.INSTANCE_NAME]: asClass(SchedulesController),
     [SchedulesService.INSTANCE_NAME]: asClass(SchedulesService),
-    [SchedulesDao.INSTANCE_NAME]: asClass(SchedulesDao)
+    schedulesDao: asClass(SchedulesDao)
   });
 }

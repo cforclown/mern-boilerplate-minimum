@@ -4,7 +4,7 @@ process.env.LOG_LEVEL='test';
 
 process.env.PORT='55555';
 process.env.ALLOWED_ORIGINS='http://localhost:55556';
-process.env.API_VERSION='http://localhost:55556';
+process.env.API_VERSION='v1';
 
 process.env.DB_CONN_STR='http://localhost:55556';
 

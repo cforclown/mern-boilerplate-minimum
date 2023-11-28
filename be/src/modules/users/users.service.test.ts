@@ -1,6 +1,6 @@
-import { UsersDao } from '.';
-import { mockCreateUserPayload, mockUpdateUserPayload, mockUser } from '../../test/mockData';
+import { container, setup } from '../../di-config';
 import { RestApiException } from '../../utils';
+import { mockCreateUserPayload, mockUpdateUserPayload, mockUser, mockUserWithPassword } from '../../test/mock-users-data';
 import { UsersService } from './users.service';
 
 const mockUsersDaoAuthenticate = jest.fn();
@@ -39,8 +39,11 @@ describe('users-service', () => {
   mockUsersDaoGetUpdate.mockReturnValue(Promise.resolve(mockUser));
   mockUsersDaoGetDelete.mockImplementation((payload) => Promise.resolve(payload));
 
-  const usersService = new UsersService({
-    usersDao: new UsersDao()
+  let usersService: UsersService;
+
+  beforeAll(() => {
+    setup();
+    usersService = container.resolve(UsersService.INSTANCE_NAME);
   });
 
   afterEach(() => {
@@ -95,19 +98,51 @@ describe('users-service', () => {
 
   describe('update', () => {
     it('should successfully update a user', async () => {
-      expect(await usersService.update(mockUpdateUserPayload)).toEqual(mockUser);
+      expect(await usersService.update(mockUser.id, mockUpdateUserPayload)).toEqual(mockUser);
     });
 
     it('should throw an error when username is taken', async () => {
       mockUsersDaoGetByUsername.mockReturnValueOnce(mockUser);
 
-      await expect(usersService.update(mockUpdateUserPayload)).rejects.toThrow(RestApiException);
+      await expect(usersService.update(mockUser.id, mockUpdateUserPayload)).rejects.toThrow(RestApiException);
     });
 
     it('should throw RestApiException when email already registered', async () => {
       mockUsersDaoGetByEmail.mockReturnValueOnce(Promise.resolve(mockUser));
 
-      await expect(usersService.update(mockUpdateUserPayload)).rejects.toThrow(RestApiException);
+      await expect(usersService.update(mockUser.id, mockUpdateUserPayload)).rejects.toThrow(RestApiException);
+    });
+  });
+
+  describe('changePassword', () => {
+    beforeAll(() => {
+      mockUsersDaoGet.mockResolvedValue(mockUserWithPassword);
+    });
+
+    it('should successfully change user password', async () => {
+      expect(await usersService.changePassword(mockUser.id, {
+        currentPassword: 'mock-password',
+        newPassword: 'mock-new-password',
+        confirmNewPassword: 'mock-new-password'
+      })).toEqual(mockUser);
+    });
+
+    it('should throw error when user not found', async () => {
+      mockUsersDaoGet.mockResolvedValueOnce(null);
+
+      await expect(usersService.changePassword(mockUser.id, {
+        currentPassword: 'invalid current password',
+        newPassword: 'mock-new-password',
+        confirmNewPassword: 'mock-new-password'
+      })).rejects.toThrow(RestApiException);
+    });
+
+    it('should throw an error when current password is not match', async () => {
+      await expect(usersService.changePassword(mockUser.id, {
+        currentPassword: 'invalid current password',
+        newPassword: 'mock-new-password',
+        confirmNewPassword: 'mock-new-password'
+      })).rejects.toThrow(RestApiException);
     });
   });
 

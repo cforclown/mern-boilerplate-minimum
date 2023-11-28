@@ -21,7 +21,6 @@ export const socketEventWrapper = <T>(
       loadingSetter?.(true);
       callback(data);
     } catch (err: any) {
-    // eslint-disable-next-line no-console
       console.error(err);
       if (err instanceof CallAPIException && err.status !== HttpStatusCode.Unauthorized) {
         toast.error(err.message);

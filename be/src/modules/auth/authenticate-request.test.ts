@@ -1,15 +1,24 @@
-import { authenticateRequest } from './authenticate-request';
+import { authenticateRequest, IExcludePath } from './authenticate-request';
 import { HttpStatusCode } from 'axios';
 import { dro } from '../../utils';
+import { mockUser } from '../../test/mock-users-data';
+
+const mockJWTVerify = jest.fn();
+jest.mock('jsonwebtoken', () => ({
+  ...jest.requireActual('jsonwebtoken'),
+  verify: jest.fn().mockImplementation((token: string, secret: string) => mockJWTVerify(token, secret))
+}));
 
 describe('authenticate-request', () => {
+  mockJWTVerify.mockReturnValue(mockUser);
+
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should successfully authenticate a request with a valid access token', () => {
     // Arrange
-    const excludePaths: string[] = [];
+    const excludePaths: IExcludePath[] = [];
     const mockReq: any = {
       originalUrl: '/api/v1/users',
       method: 'GET',
@@ -36,7 +45,7 @@ describe('authenticate-request', () => {
 
   it('should skip authentication for excluded paths with GET method', () => {
     // Arrange
-    const excludePaths: string[] = ['/api/v1/public'];
+    const excludePaths: IExcludePath[] = [{ path: '/api/v1/public' }];
     const mockReq: any = {
       originalUrl: '/api/v1/public',
       method: 'GET',
@@ -54,7 +63,7 @@ describe('authenticate-request', () => {
 
   it('should return 401 Unauthorized if no authorization header is present', () => {
     // Arrange
-    const excludePaths: string[] = [];
+    const excludePaths: IExcludePath[] = [];
     const mockReq: any = {
       originalUrl: '/api/v1/users',
       method: 'GET',
@@ -71,15 +80,14 @@ describe('authenticate-request', () => {
     authenticateRequest(excludePaths)(mockReq, mockRes, mockNext);
 
     // Assert
-    expect(mockRes.sendStatus).toHaveBeenCalledWith(HttpStatusCode.Unauthorized);
-    expect(mockRes.status).not.toHaveBeenCalled();
-    expect(mockRes.send).not.toHaveBeenCalled();
+    expect(mockRes.status).toHaveBeenCalledWith(HttpStatusCode.Unauthorized);
+    expect(mockRes.send).toHaveBeenCalledWith(dro.error('Unauthorized'));
     expect(mockNext).not.toHaveBeenCalled();
   });
 
   it('should return 401 Unauthorized if the access token is invalid', () => {
     // Arrange
-    const excludePaths: string[] = [];
+    const excludePaths: IExcludePath[] = [];
     const mockReq: any = {
       originalUrl: '/api/v1/users',
       method: 'GET',
@@ -93,6 +101,8 @@ describe('authenticate-request', () => {
     };
     const mockNext = jest.fn();
 
+    mockJWTVerify.mockReturnValueOnce(null);
+
     // Act
     authenticateRequest(excludePaths)(mockReq, mockRes, mockNext);
 
@@ -104,7 +114,7 @@ describe('authenticate-request', () => {
 
   it('should set req.user if the access token is valid', () => {
     // Arrange
-    const excludePaths: string[] = [];
+    const excludePaths: IExcludePath[] = [];
     const mockReq: any = {
       originalUrl: '/api/v1/users',
       method: 'GET',

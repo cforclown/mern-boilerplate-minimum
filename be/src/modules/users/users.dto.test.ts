@@ -1,60 +1,8 @@
 import { validateSchema, ValidationException } from '../../utils';
-import { CreateUserPayloadSchema, UpdateUserPayloadSchema } from './users.dto';
-import { mockCreateUserPayload, mockUpdateUserPayload } from '../../test/mockData';
+import { ChangePasswordPayloadSchema, UpdateUserPayloadSchema } from './users.dto';
+import { mockChangePasswordPayload, mockUpdateUserPayload } from '../../test/mock-users-data';
 
 describe('users-data-transfer-object', () => {
-  describe('CreateUserPayloadSchema', () => {
-    it('should return value when schema is valid', () => {
-      const result = validateSchema({ schema: CreateUserPayloadSchema, payload: mockCreateUserPayload });
-      expect(result).toEqual(mockCreateUserPayload);
-    });
-
-    it('should return value when email not provided', () => {
-      const result = validateSchema({ schema: CreateUserPayloadSchema, payload: mockCreateUserPayload });
-      expect(result).toEqual(mockCreateUserPayload);
-    });
-
-    it('should throw validation exception when username not provided', () => {
-      expect(() => validateSchema({
-        schema: CreateUserPayloadSchema,
-        payload: {
-          ...mockCreateUserPayload,
-          username: undefined
-        }
-      })).toThrow(ValidationException);
-    });
-
-    it('should throw validation exception when fullname not provided', () => {
-      expect(() => validateSchema({
-        schema: CreateUserPayloadSchema,
-        payload: {
-          ...mockCreateUserPayload,
-          fullname: undefined
-        }
-      })).toThrow(ValidationException);
-    });
-
-    it('should throw validation exception when role not provided', () => {
-      expect(() => validateSchema({
-        schema: CreateUserPayloadSchema,
-        payload: {
-          ...mockCreateUserPayload,
-          role: undefined
-        }
-      })).toThrow(ValidationException);
-    });
-
-    it('should throw validation exception when email is invalid not provided', () => {
-      expect(() => validateSchema({
-        schema: CreateUserPayloadSchema,
-        payload: {
-          ...mockCreateUserPayload,
-          email: 'invalid email'
-        }
-      })).toThrow(ValidationException);
-    });
-  });
-
   describe('UpdateProfilePayloadSchema', () => {
     it('should return value when schema is valid', () => {
       expect(validateSchema({
@@ -64,22 +12,36 @@ describe('users-data-transfer-object', () => {
       expect(validateSchema({
         schema: UpdateUserPayloadSchema,
         payload: {
-          id: 'user-id',
           fullname: 'fullname'
         }
       })).toEqual({
-        id: 'user-id',
         fullname: 'fullname'
       });
     });
 
-    it('should allow payload only contain id', () => {
-      const result = validateSchema({ schema: UpdateUserPayloadSchema, payload: { id: 'user-id' } });
-      expect(result).toEqual({ id: 'user-id' });
+    it('should throw validation exception when payload is not valid', () => {
+      expect(() => validateSchema({ schema: UpdateUserPayloadSchema, payload: { invalidField: 'invalid field value' } })).toThrow(ValidationException);
     });
 
     it('should throw validation exception when payload is not object', () => {
       expect(() => validateSchema({ schema: UpdateUserPayloadSchema, payload: null })).toThrow(ValidationException);
+    });
+  });
+
+  describe('ChangePasswordPayloadSchema', () => {
+    it('should return value when schema is valid', () => {
+      expect(validateSchema({
+        schema: ChangePasswordPayloadSchema,
+        payload: mockChangePasswordPayload
+      })).toEqual(mockChangePasswordPayload);
+    });
+
+    it('should throw validation exception when payload is not valid', () => {
+      expect(() => validateSchema({ schema: ChangePasswordPayloadSchema, payload: { invalidField: 'invalid field value' } })).toThrow(ValidationException);
+    });
+
+    it('should throw validation exception when payload is not object', () => {
+      expect(() => validateSchema({ schema: ChangePasswordPayloadSchema, payload: null })).toThrow(ValidationException);
     });
   });
 });

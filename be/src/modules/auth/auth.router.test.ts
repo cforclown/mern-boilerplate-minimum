@@ -1,9 +1,8 @@
 import request from 'supertest';
-import { setup } from '../../di-config';
-import App from '../../app';
-import { mockRegisterUserPayload, mockUser } from '../../test/mockData';
-import { IUserContext } from './auth.types';
+import { container, setup } from '../../di-config';
+import { mockRegisterUserPayload, mockUser as mockUserData } from '../../test/mock-users-data';
 import { HttpStatusCode } from 'axios';
+import { Environment } from '../../utils';
 
 const mockJWTSign = jest.fn();
 const mockJWTVerify = jest.fn();
@@ -41,6 +40,10 @@ jest.mock('../users/users.dao', () => ({
 }));
 
 describe('auth-router', () => {
+  const mockUser = {
+    ...mockUserData,
+    toJSON: (): Record<string, any> => mockUserData
+  };
   mockUsersDaoAuthenticate.mockReturnValue(Promise.resolve(mockUser));
   mockUsersDaoGet.mockReturnValue(Promise.resolve(mockUser));
   mockUsersDaoGetByUsername.mockReturnValue(Promise.resolve(null));
@@ -51,21 +54,22 @@ describe('auth-router', () => {
   mockUsersDaoGetDelete.mockImplementation((payload) => Promise.resolve(payload));
 
   let app: any;
+  const apiBaseUrl = `/api/${Environment.getApiVersion()}`;
 
   const mockAccessToken = 'generated-access-token';
   const mockRefreshToken = 'generated-refresh-token';
-  const mockUserToken: IUserContext = {
-    user: mockUser,
+  const mockUserToken = {
+    user: mockUserData,
     accessToken: mockAccessToken,
     refreshToken: mockRefreshToken,
     expiresIn: 3600
   };
-  mockJWTSign.mockReturnValue(mockUser);
-  mockJWTVerify.mockReturnValue(mockUser);
+  mockJWTSign.mockReturnValue(mockUserData);
+  mockJWTVerify.mockReturnValue(mockUserData);
 
   beforeAll(() => {
     setup();
-    app = App();
+    app = container.resolve('app');
   });
 
   beforeEach(() => {
@@ -81,7 +85,7 @@ describe('auth-router', () => {
   describe('login', () => {
     it('should successfully create a token for user', async () => {
       const response = await request(app)
-        .post('/auth/login/test')
+        .post(`${apiBaseUrl}/auth/login/test`)
         .send({
           username: 'username',
           password: 'password'
@@ -96,7 +100,7 @@ describe('auth-router', () => {
 
     it('should fail because password not provided', async () => {
       await request(app)
-        .post('/auth/login/test')
+        .post(`${apiBaseUrl}/auth/login/test`)
         .send({
           username: 'username'
         })
@@ -106,7 +110,7 @@ describe('auth-router', () => {
     it('should return 404 when user not found', async () => {
       mockUsersDaoAuthenticate.mockReturnValueOnce(Promise.resolve(null));
       await request(app)
-        .post('/auth/login/test')
+        .post(`${apiBaseUrl}/auth/login/test`)
         .send({
           username: 'username',
           password: 'password'
@@ -118,7 +122,7 @@ describe('auth-router', () => {
   describe('register', () => {
     it('should successfully register a user', async () => {
       const response = await request(app)
-        .post('/auth/register')
+        .post(`${apiBaseUrl}/auth/register`)
         .send(mockRegisterUserPayload)
         .expect(HttpStatusCode.Ok);
 
@@ -130,7 +134,7 @@ describe('auth-router', () => {
 
     it('should return error when password and confirmPassword is not match', async () => {
       await request(app)
-        .post('/auth/register')
+        .post(`${apiBaseUrl}/auth/register`)
         .send({
           ...mockRegisterUserPayload,
           password: 'password',
@@ -143,7 +147,7 @@ describe('auth-router', () => {
   describe('refresh', () => {
     it('should successfully refresh user token', async () => {
       const response = await request(app)
-        .post('/auth/refresh')
+        .post(`${apiBaseUrl}/auth/refresh`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .send({ refreshToken: 'mock-refresh-token' })
         .expect(HttpStatusCode.Ok);
@@ -158,17 +162,17 @@ describe('auth-router', () => {
       mockUsersDaoGet.mockReturnValueOnce(Promise.resolve(null));
 
       await request(app)
-        .post('/auth/refresh')
+        .post(`${apiBaseUrl}/auth/refresh`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .send({ refreshToken: 'mock-refresh-token' })
-        .expect(HttpStatusCode.BadRequest);
+        .expect(HttpStatusCode.Unauthorized);
     });
   });
 
   describe('logout', () => {
     it('should successfully delete a user', async () => {
       const response = await request(app)
-        .delete('/auth/logout')
+        .delete(`${apiBaseUrl}/auth/logout`)
         .set({ Authorization: 'Bearer fake-access-token' })
         .expect(HttpStatusCode.Ok);
       expect(response).toHaveProperty('text');

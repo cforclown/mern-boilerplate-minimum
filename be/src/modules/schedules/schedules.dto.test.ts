@@ -1,7 +1,7 @@
 import { validateSchema } from '../../utils/validate-schema';
 import { ValidationException } from '../../utils/exceptions/validation-exception';
 import { CreateSchedulePayloadSchema, UpdateSchedulePayloadSchema } from './schedules.dto';
-import { mockCreateSchedulePayload, mockUpdateSchedulePayload } from '../../test/mock-data';
+import { mockCreateSchedulePayload, mockUpdateSchedulePayload } from '../../test/mock-schedules-data';
 
 describe('schedules-data-transfer-object', () => {
   describe('CreateSchedulePayloadSchema', () => {

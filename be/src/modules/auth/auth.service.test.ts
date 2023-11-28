@@ -1,8 +1,8 @@
 import { RestApiException } from '../../utils';
-import { UsersDao, UsersService } from '../users';
 import { AuthService } from './auth.service';
 import { IUserContext } from './auth.types';
-import { mockRegisterUserPayload, mockUser } from '../../test/mockData';
+import { mockRegisterUserPayload, mockUser as mockUserData } from '../../test/mock-users-data';
+import { container, setup } from '../../di-config';
 
 const mockUsersDaoAuthenticate = jest.fn();
 const mockUsersDaoGet = jest.fn();
@@ -34,6 +34,11 @@ jest.mock('jsonwebtoken', () => ({
 }));
 
 describe('auth-service', () => {
+  const mockUser = {
+    ...mockUserData,
+    toJSON: (): Record<string, any> => mockUserData
+  };
+
   const mockAccessToken = 'generated-access-token';
   const mockRefreshToken = 'generated-refresh-token';
   const mockUserToken: IUserContext = {
@@ -50,8 +55,11 @@ describe('auth-service', () => {
   mockUsersDaoCreate.mockReturnValue(Promise.resolve(mockUser));
   mockUsersDaoCreate.mockReturnValue(Promise.resolve(mockUser));
 
-  const usersService = new UsersService({ usersDao: new UsersDao() });
-  const authService = new AuthService({ usersService });
+  let authService: AuthService;
+  beforeAll(() => {
+    setup();
+    authService = container.resolve('authService');
+  });
 
   beforeEach(() => {
     mockJwtSign.mockReturnValueOnce(mockAccessToken);

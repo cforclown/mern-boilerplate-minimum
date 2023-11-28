@@ -1,7 +1,7 @@
 import { UsersDao } from '.';
 import { RestApiException } from '../../utils';
-import { mockCreateUserPayload, mockUpdateUserPayload, mockUser } from '../../test/mockData';
-import { MockMongooseModel } from '../../test/mockMongooseModel';
+import { mockCreateUserPayload, mockUpdateUserPayload, mockUser } from '../../test/mock-users-data';
+import { MockMongooseModel } from '../../test/mock-mongoose-model';
 
 jest.mock('mongoose', () => ({
   ...jest.requireActual('mongoose'),
@@ -135,7 +135,7 @@ describe('users-dao', () => {
     });
 
     it('should successfully update user', async () => {
-      const user = await usersDao.update(mockUpdateUserPayload);
+      const user = await usersDao.update({ id: 'mock-user-id', ...mockUpdateUserPayload });
       expect(MockMongooseModel.mockFindById).toHaveBeenCalled();
       expect(mockSave).toHaveBeenCalled();
       expect(user).toEqual(expect.objectContaining({
@@ -163,12 +163,12 @@ describe('users-dao', () => {
 
     it('should throw an error when user not found', async () => {
       MockMongooseModel.mockExec.mockReturnValueOnce(Promise.resolve(null));
-      await expect(usersDao.update(mockUpdateUserPayload)).rejects.toThrow(RestApiException);
+      await expect(usersDao.update({ id: 'mock-user-id', ...mockUpdateUserPayload })).rejects.toThrow(RestApiException);
     });
 
     it('should throw an error when document.save() throw an error', async () => {
       mockSave.mockRejectedValueOnce(new Error());
-      await expect(usersDao.update(mockUpdateUserPayload)).rejects.toThrowError();
+      await expect(usersDao.update({ id: 'mock-user-id', ...mockUpdateUserPayload })).rejects.toThrowError();
     });
   });
 

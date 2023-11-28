@@ -1,14 +1,13 @@
-import mongoose, { model, Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { ISchedule, SchedulesDao, schedulesSchema } from '.';
-import { RestApiException } from '../../utils/exceptions';
-import { mockCreateSchedulePayload } from '../../test/mock-data';
+import { mockCreateSchedulePayload } from '../../test/mock-schedules-data';
 import MockDB from '../../test/mock-db';
 import { docToJSON, expectDocumentToEqual } from '../../test/test-utils';
 
 describe('schedules-dao', () => {
   const db = new MockDB();
   mongoose.model<ISchedule>(SchedulesDao.MODEL_NAME, schedulesSchema);
-  const schedulesDao = new SchedulesDao(model<ISchedule>(SchedulesDao.MODEL_NAME));
+  const schedulesDao = new SchedulesDao();
 
   beforeAll(async () => {
     await db.connect();
@@ -61,7 +60,11 @@ describe('schedules-dao', () => {
       end: mockCreateSchedulePayload.end?.toISOString()
     });
 
-    await expect(schedulesDao.update({ id: new Types.ObjectId().toHexString(), name: 'new name' })).rejects.toThrow(RestApiException);
+    const updateResult = await schedulesDao.update({
+      id: new Types.ObjectId().toString(),
+      name: 'new name'
+    });
+    expect(updateResult).toEqual(null);
 
     const getResult = await schedulesDao.get(doc.id);
     expectDocumentToEqual(getResult, doc);
@@ -76,9 +79,24 @@ describe('schedules-dao', () => {
     });
 
     const deletedExplorationId = await schedulesDao.delete(doc.id);
-    expect(deletedExplorationId).toEqual(doc.id);
+    expect(deletedExplorationId).toBeTruthy();
 
     const getResult = await schedulesDao.get(doc.id);
     expect(getResult).toEqual(null);
+  });
+
+  it('create -> delete (fail) -> get (exists)', async () => {
+    const doc = await schedulesDao.create(mockCreateSchedulePayload);
+    expectDocumentToEqual(doc, {
+      ...mockCreateSchedulePayload,
+      start: mockCreateSchedulePayload.start.toISOString(),
+      end: mockCreateSchedulePayload.end?.toISOString()
+    });
+
+    const deletedExplorationId = await schedulesDao.delete(new Types.ObjectId().toString());
+    expect(deletedExplorationId).toEqual(null);
+
+    const getResult = await schedulesDao.get(doc.id);
+    expectDocumentToEqual(getResult, doc);
   });
 });
