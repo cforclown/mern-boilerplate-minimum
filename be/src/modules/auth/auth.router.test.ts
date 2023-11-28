@@ -2,7 +2,7 @@ import request from 'supertest';
 import { setup } from '../../di-config';
 import App from '../../app';
 import { mockRegisterUserPayload, mockUser } from '../../test/mockData';
-import { IAccessToken } from './auth.types';
+import { IUserContext } from './auth.types';
 import { HttpStatusCode } from 'axios';
 
 const mockJWTSign = jest.fn();
@@ -54,7 +54,7 @@ describe('auth-router', () => {
 
   const mockAccessToken = 'generated-access-token';
   const mockRefreshToken = 'generated-refresh-token';
-  const mockUserToken: IAccessToken = {
+  const mockUserToken: IUserContext = {
     user: mockUser,
     accessToken: mockAccessToken,
     refreshToken: mockRefreshToken,

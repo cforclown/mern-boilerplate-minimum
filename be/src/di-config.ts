@@ -19,6 +19,8 @@ import App from './app';
 import Database from './database';
 import { MainRouter } from './app/routers';
 import { ApiRouter } from './app/routers/api';
+import SIOController from './socketio/sio.controller';
+import SIOService from './socketio/sio.service';
 
 export const container = createContainer({
   injectionMode: InjectionMode.CLASSIC
@@ -30,6 +32,8 @@ export function setup (): void {
     mainRouter: asFunction(MainRouter),
     apiRouter: asFunction(ApiRouter),
     [Database.INSTANCE_NAME]: asClass(Database),
+    [SIOController.INSTANCE_NAME]: asClass(SIOController),
+    [SIOService.INSTANCE_NAME]: asClass(SIOService),
     [AUTH_ROUTER_INSTANCE_NAME]: asFunction(AuthRouter),
     [AuthController.INSTANCE_NAME]: asClass(AuthController),
     [AuthService.INSTANCE_NAME]: asClass(AuthService),

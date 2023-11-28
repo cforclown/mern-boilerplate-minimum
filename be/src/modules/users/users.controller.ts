@@ -3,7 +3,7 @@ import { HttpStatusCode } from 'axios';
 import { UsersService } from './users.service';
 import { IUser } from './users.types';
 import { RestApiException } from '../../utils';
-import { IAccessToken } from '../auth';
+import { IUserContext } from '../auth';
 
 export class UsersController {
   public static readonly INSTANCE_NAME = 'usersController';
@@ -32,11 +32,11 @@ export class UsersController {
   }
 
   async update ({ user, body }: Request): Promise<IUser> {
-    return this.usersService.update((user as IAccessToken).user.id, body);
+    return this.usersService.update((user as IUserContext).user.id, body);
   }
 
   async changePassword ({ user, body }: Request): Promise<IUser> {
-    return this.usersService.changePassword((user as IAccessToken).user.id, body);
+    return this.usersService.changePassword((user as IUserContext).user.id, body);
   }
 
   async delete ({ params }: Request): Promise<string> {

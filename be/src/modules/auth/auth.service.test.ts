@@ -1,7 +1,7 @@
 import { RestApiException } from '../../utils';
 import { UsersDao, UsersService } from '../users';
 import { AuthService } from './auth.service';
-import { IAccessToken } from './auth.types';
+import { IUserContext } from './auth.types';
 import { mockRegisterUserPayload, mockUser } from '../../test/mockData';
 
 const mockUsersDaoAuthenticate = jest.fn();
@@ -36,7 +36,7 @@ jest.mock('jsonwebtoken', () => ({
 describe('auth-service', () => {
   const mockAccessToken = 'generated-access-token';
   const mockRefreshToken = 'generated-refresh-token';
-  const mockUserToken: IAccessToken = {
+  const mockUserToken: IUserContext = {
     user: mockUser,
     accessToken: mockAccessToken,
     refreshToken: mockRefreshToken,

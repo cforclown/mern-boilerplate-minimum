@@ -1,5 +1,5 @@
 import express from 'express';
-import { AuthService, IAccessToken } from '.';
+import { AuthService, IUserContext } from '.';
 import { IUser } from '..';
 
 export class AuthController {
@@ -16,19 +16,19 @@ export class AuthController {
     this.refresh = this.refresh.bind(this);
   }
 
-  async login ({ body }: express.Request): Promise<IAccessToken> {
+  async login ({ body }: express.Request): Promise<IUserContext> {
     return this.authService.login(body);
   }
 
-  async register ({ body }: express.Request): Promise<IAccessToken> {
+  async register ({ body }: express.Request): Promise<IUserContext> {
     return this.authService.register(body);
   }
 
-  async verify ({ user }: express.Request): Promise<IAccessToken> {
+  async verify ({ user }: express.Request): Promise<IUserContext> {
     return this.authService.verify(user as IUser);
   }
 
-  async refresh ({ body }: express.Request): Promise<IAccessToken> {
+  async refresh ({ body }: express.Request): Promise<IUserContext> {
     return this.authService.refresh(body.refreshToken);
   }
 }

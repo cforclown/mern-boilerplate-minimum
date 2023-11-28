@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { SchedulesController } from './schedules.controller';
-import { ExplorationDto, RequestHandler, validateBody, validateParams } from '../../utils';
+import { ExplorationPayloadSchema, RequestHandler, validateBody, validateParams } from '../../utils';
 import { CreateSchedulePayloadSchema, UpdateSchedulePayloadSchema } from './schedules.dto';
 import { idSchema } from '../../schemas';
 
@@ -58,7 +58,7 @@ export function SchedulesRouter (schedulesController: SchedulesController): Rout
    *                      schema:
    *                          $ref: '#/components/schemas/explorationPayload'
    */
-  router.post('/explore', validateBody(ExplorationDto), RequestHandler(schedulesController.explore));
+  router.post('/explore', validateBody(ExplorationPayloadSchema), RequestHandler(schedulesController.explore));
 
   /**
    * @swagger

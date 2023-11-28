@@ -13,7 +13,7 @@ export interface IExplorationResponse<T> {
   }
 }
 
-export const ExplorationDto = Joi.object({
+export const ExplorationPayloadSchema = Joi.object({
   query: Joi.string().allow(null, '').default(null),
   pagination: PaginationDto.required()
 });

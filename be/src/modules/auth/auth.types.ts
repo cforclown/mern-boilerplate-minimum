@@ -1,7 +1,7 @@
 import { IUser } from '..';
 
-export interface IAccessToken {
-  user: Omit<IUser, 'password'>;
+export interface IUserContext {
+  user: IUser;
   accessToken: string;
   refreshToken: string;
   expiresIn: number;

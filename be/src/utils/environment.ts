@@ -57,7 +57,7 @@ export const Environment = {
     const accessTokenExpIn = getOptionalEnv('ACCESS_TOKEN_EXP_IN', 7200);
     return typeof accessTokenExpIn === 'string' ? parseInt(accessTokenExpIn) : accessTokenExpIn;
   },
-  getAccessRefreshTokenExpIn: (): string => '7d',
+  getRefreshTokenExpIn: (): string => '7d',
 
   getEncryptionAlgorithm: (): string => getOptionalEnv('ENCRYPTION_ALGORITHM', 'aes-256-cbc'),
   getEncryptionKey: (): string => getEnvOrThrow('ENCRYPTION_KEY')

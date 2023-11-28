@@ -1,6 +1,6 @@
 import { sign, verify } from 'jsonwebtoken';
 import { HttpStatusCode } from 'axios';
-import { IAccessToken, ILoginPayload, IRegisterUserPayload } from '.';
+import { ILoginPayload, IRegisterUserPayload, IUserContext } from '.';
 import { IUser, UsersService } from '..';
 import { Environment, RestApiException } from '../../utils';
 
@@ -25,7 +25,7 @@ export class AuthService {
     return this.usersService.authenticate(payload);
   }
 
-  async login (payload: ILoginPayload): Promise<IAccessToken> {
+  async login (payload: ILoginPayload): Promise<IUserContext> {
     const user = await this.usersService.authenticate(payload);
     if (!user) {
       throw new RestApiException('Incorrect username or password', HttpStatusCode.NotFound);
@@ -33,14 +33,14 @@ export class AuthService {
     return this.generateAccessToken(user);
   }
 
-  async verify (user?: IUser): Promise<IAccessToken> {
+  async verify (user?: IUser): Promise<IUserContext> {
     if (!user) {
       throw new Error('No user object in request');
     }
     return this.generateAccessToken(user);
   }
 
-  async register (payload: IRegisterUserPayload): Promise<IAccessToken> {
+  async register (payload: IRegisterUserPayload): Promise<IUserContext> {
     if (payload.password !== payload.confirmPassword) {
       throw new RestApiException('Confirm password is not match');
     }
@@ -48,7 +48,7 @@ export class AuthService {
     return this.generateAccessToken(user);
   }
 
-  async refresh (refreshToken: string): Promise<IAccessToken> {
+  async refresh (refreshToken: string): Promise<IUserContext> {
     try {
       const tokenData = verify(refreshToken, Environment.getRefreshTokenSecret());
       const user = await this.usersService.get((tokenData as IUser).id);
@@ -61,12 +61,24 @@ export class AuthService {
     }
   }
 
-  generateAccessToken (user: IUser): IAccessToken {
+  async verifyAccessToken (accessToken: string): Promise<IUser> {
+    try {
+      const tokenData = verify(accessToken, Environment.getAccessTokenSecret());
+      const user = await this.usersService.get((tokenData as IUser).id);
+      if (!user) {
+        throw new RestApiException('Refresh token is not valid', HttpStatusCode.Unauthorized);
+      }
+
+      return user;
+    } catch (err) {
+      throw new RestApiException('Refresh token is expired', HttpStatusCode.Unauthorized);
+    }
+  }
+
+  generateAccessToken (user: IUser): IUserContext {
     const expiresIn = Environment.getAccessTokenExpIn();
     const accessToken = sign({ ...user.toJSON() }, Environment.getAccessTokenSecret(), { expiresIn });
-    const refreshToken = sign({ ...user.toJSON() }, Environment.getRefreshTokenSecret(), {
-      expiresIn: Environment.getAccessRefreshTokenExpIn()
-    });
+    const refreshToken = sign({ ...user.toJSON() }, Environment.getRefreshTokenSecret(), { expiresIn: Environment.getRefreshTokenExpIn() });
 
     return {
       user,
