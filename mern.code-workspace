@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "mern.ui"
+		},
+		{
+			"path": "mern.be"
+		},
+
+		{
+			"path": "mern.contracts"
+		}
+	],
+	"settings": {}
+}
