@@ -61,7 +61,7 @@ describe('authenticate-request', () => {
     expect(mockNext).toHaveBeenCalled();
   });
 
-  it('should return 401 Unauthorized if no authorization header is present', () => {
+  it('should return 401 Unauthorized if no authorization header set', () => {
     // Arrange
     const excludePaths: IExcludePath[] = [];
     const mockReq: any = {

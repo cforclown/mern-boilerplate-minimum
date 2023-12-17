@@ -1,6 +1,11 @@
 import { container, setup } from '../../di-config';
 import { RestApiException } from '../../utils';
-import { mockCreateUserPayload, mockUpdateUserPayload, mockUser, mockUserWithPassword } from '../../test/mock-users-data';
+import {
+  mockCreateUserPayload,
+  mockUpdateUserPayload,
+  mockUser,
+  mockUserWithPassword
+} from '../../test/mock-users-data';
 import { UsersService } from './users.service';
 
 const mockUsersDaoAuthenticate = jest.fn();
@@ -138,6 +143,8 @@ describe('users-service', () => {
     });
 
     it('should throw an error when current password is not match', async () => {
+      mockUsersDaoAuthenticate.mockResolvedValueOnce(null);
+
       await expect(usersService.changePassword(mockUser.id, {
         currentPassword: 'invalid current password',
         newPassword: 'mock-new-password',

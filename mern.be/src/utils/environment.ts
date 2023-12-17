@@ -9,7 +9,7 @@ export function getEnvOrThrow (varName: string): string {
   return value;
 }
 
-function getOptionalEnv <T> (varName: string, defaultValue: T): string | T {
+export function getOptionalEnv <T> (varName: string, defaultValue: T): string | T {
   const value = process.env[varName];
   if (!value) {
     return defaultValue;

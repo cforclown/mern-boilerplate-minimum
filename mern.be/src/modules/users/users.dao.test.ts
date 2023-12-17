@@ -1,192 +1,103 @@
-import { UsersDao } from '.';
-import { RestApiException } from '../../utils';
-import { mockCreateUserPayload, mockUpdateUserPayload, mockUser } from '../../test/mock-users-data';
-import { MockMongooseModel } from '../../test/mock-mongoose-model';
-
-jest.mock('mongoose', () => ({
-  ...jest.requireActual('mongoose'),
-  model: jest.fn().mockImplementation(() => MockMongooseModel)
-}));
+import { IUser, UsersDao, usersSchema } from '.';
+import { hashPassword } from '../../utils';
+import { mockCreateUserPayload } from '../../test/mock-users-data';
+import MockDB from '../../test/mock-db';
+import { model, Types } from 'mongoose';
+import { docToJSON, expectDocumentToEqual } from '../../test/test-utils';
 
 describe('users-dao', () => {
-  MockMongooseModel.mockExec.mockReturnValue(Promise.resolve(mockUser));
-  MockMongooseModel.mockSelect.mockImplementation(() => ({
-    exec: (): any => MockMongooseModel.mockExec()
-  }));
-  MockMongooseModel.mockFindById.mockImplementation(() => ({
-    select: (payload: any): any => MockMongooseModel.mockSelect(payload)
-  }));
-  MockMongooseModel.mockFindOne.mockImplementation(() => ({
-    select: (payload: any): any => MockMongooseModel.mockSelect(payload)
-  }));
-  MockMongooseModel.mockCreate.mockReturnValue(Promise.resolve(mockUser));
-  MockMongooseModel.mockFindOneAndUpdate.mockImplementation(() => ({
-    exec: (): any => MockMongooseModel.mockExec()
-  }));
-  MockMongooseModel.mockFindOneAndDelete.mockImplementation(() => ({
-    exec: (): any => MockMongooseModel.mockExec()
-  }));
+  const db = new MockDB();
+  model<IUser>(UsersDao.MODEL_NAME, usersSchema);
 
   const usersDao = new UsersDao();
 
-  afterEach(() => {
+  beforeAll(async () => {
+    await db.connect();
+  });
+
+  afterEach(async () => {
     jest.clearAllMocks();
+    await db.clearDB();
   });
 
-  describe('authenticate', () => {
-    it('should successfully authenticate user', async () => {
-      const user = await usersDao.authenticate({ username: 'username', password: 'password' });
-      expect(MockMongooseModel.mockFindOne).toHaveBeenCalled();
-      expect(user).toEqual(mockUser);
-    });
-
-    it('should throw an error when user not found', async () => {
-      MockMongooseModel.mockExec.mockReturnValueOnce(Promise.resolve(null));
-      const user = await usersDao.authenticate({ username: 'username', password: 'password' });
-      expect(user).toEqual(null);
-    });
-
-    it('should throw an error when model.findOne throw an error', async () => {
-      MockMongooseModel.mockExec.mockRejectedValueOnce(new Error('error'));
-      await expect(usersDao.authenticate({ username: 'username', password: 'password' })).rejects.toThrowError();
-    });
+  afterAll(async () => {
+    await db.close();
   });
 
-  describe('get', () => {
-    it('should successfully get user', async () => {
-      const user = await usersDao.get(mockUser.id);
-      expect(MockMongooseModel.mockFindOne).toHaveBeenCalled();
-      expect(user).toEqual(mockUser);
+  it('create -> get, authenticate, getByUsername, getByEmail, getAll', async () => {
+    const doc = await usersDao.create(mockCreateUserPayload);
+    expectDocumentToEqual(doc, mockCreateUserPayload, { excludeFields: ['password'] });
+
+    let getResult = await usersDao.get(doc.id);
+    expectDocumentToEqual(getResult, doc, { excludeFields: ['password'] });
+    getResult = await usersDao.authenticate({
+      username: doc.username,
+      password: await hashPassword(mockCreateUserPayload.password as string)
     });
 
-    it('should throw an error when user not found', async () => {
-      MockMongooseModel.mockExec.mockReturnValueOnce(Promise.resolve(null));
-      const user = await usersDao.get(mockUser.id);
-      expect(user).toEqual(null);
-    });
+    getResult = await usersDao.getByUsername(doc.username);
+    expectDocumentToEqual(getResult, doc, { excludeFields: ['password'] });
 
-    it('should throw an error when model.findById throw an error', async () => {
-      MockMongooseModel.mockExec.mockRejectedValueOnce(new Error('error'));
-      await expect(usersDao.get(mockUser.id)).rejects.toThrowError();
-    });
+    getResult = await usersDao.getByEmail(doc.email);
+    expectDocumentToEqual(getResult, doc, { excludeFields: ['password'] });
+
+    const [getAllResult] = await usersDao.getAll();
+    expectDocumentToEqual(getAllResult, doc, { excludeFields: ['password'] });
   });
 
-  describe('getByUsername', () => {
-    it('should successfully return a user', async () => {
-      const user = await usersDao.getByUsername('mock-username');
-      expect(MockMongooseModel.mockFindOne).toHaveBeenCalled();
-      expect(user).toEqual(mockUser);
-    });
+  it('create -> get -> update -> get', async () => {
+    const doc = await usersDao.create(mockCreateUserPayload);
+    expectDocumentToEqual(doc, mockCreateUserPayload, { excludeFields: ['password'] });
 
-    it('should throw an error when user not found', async () => {
-      MockMongooseModel.mockExec.mockReturnValueOnce(Promise.resolve(null));
-      const user = await usersDao.getByUsername('mock-username');
-      expect(user).toEqual(null);
-    });
+    let getResult = await usersDao.get(doc.id);
+    expectDocumentToEqual(getResult, doc, { excludeFields: ['password'] });
 
-    it('should throw an error when model.findOne throw an error', async () => {
-      MockMongooseModel.mockExec.mockRejectedValueOnce(new Error('error'));
-      await expect(usersDao.getByUsername('mock-username')).rejects.toThrowError();
-    });
+    const updateResult = await usersDao.update({ id: doc.id, username: 'new-name' });
+    expectDocumentToEqual(updateResult, { ...docToJSON(doc), username: 'new-name' }, { excludeFields: ['password'] });
+
+    getResult = await usersDao.get(doc.id);
+    expectDocumentToEqual(getResult, updateResult, { excludeFields: ['password'] });
   });
 
-  describe('getByEmail', () => {
-    it('should successfully return a user', async () => {
-      const user = await usersDao.getByEmail('mock-email');
-      expect(MockMongooseModel.mockFindOne).toHaveBeenCalled();
-      expect(user).toEqual(mockUser);
-    });
+  it('create -> get -> update (fail) -> get (no changes)', async () => {
+    const doc = await usersDao.create(mockCreateUserPayload);
+    expectDocumentToEqual(doc, mockCreateUserPayload, { excludeFields: ['password'] });
 
-    it('should throw an error when user not found', async () => {
-      MockMongooseModel.mockExec.mockReturnValueOnce(Promise.resolve(null));
-      const user = await usersDao.getByEmail('mock-email');
-      expect(user).toEqual(null);
-    });
+    let getResult = await usersDao.get(doc.id);
+    expectDocumentToEqual(getResult, doc, { excludeFields: ['password'] });
 
-    it('should throw an error when model.findOne throw an error', async () => {
-      MockMongooseModel.mockExec.mockRejectedValueOnce(new Error('error'));
-      await expect(usersDao.getByEmail('mock-email')).rejects.toThrowError();
-    });
+    const updateResult = await usersDao.update({ id: new Types.ObjectId().toString(), username: 'new-name' });
+    expect(updateResult).toEqual(null);
+
+    getResult = await usersDao.get(doc.id);
+    expectDocumentToEqual(doc, mockCreateUserPayload, { excludeFields: ['password'] });
   });
 
-  describe('create', () => {
-    it('should successfully create an user', async () => {
-      const user = await usersDao.create({ ...mockCreateUserPayload });
-      expect(user).toEqual(mockUser);
-    });
+  it('create -> get -> delete -> get (return null)', async () => {
+    const doc = await usersDao.create(mockCreateUserPayload);
+    expectDocumentToEqual(doc, mockCreateUserPayload, { excludeFields: ['password'] });
 
-    it('should throw an error', async () => {
-      MockMongooseModel.mockCreate.mockRejectedValueOnce(new RestApiException('error'));
-      await expect(usersDao.create({ ...mockCreateUserPayload })).rejects.toThrow(RestApiException);
-    });
+    let getResult = await usersDao.get(doc.id);
+    expectDocumentToEqual(getResult, doc, { excludeFields: ['password'] });
+
+    const deleteResult = await usersDao.delete(doc.id);
+    expect(deleteResult?.toString()).toEqual(doc.id);
+
+    getResult = await usersDao.get(doc.id);
+    expect(getResult).toEqual(null);
   });
 
-  describe('update', () => {
-    const mockSave = jest.fn();
+  it('create -> get -> delete (fail) -> get (still exist)', async () => {
+    const doc = await usersDao.create(mockCreateUserPayload);
+    expectDocumentToEqual(doc, mockCreateUserPayload, { excludeFields: ['password'] });
 
-    beforeEach(() => {
-      MockMongooseModel.mockExec.mockReturnValue(Promise.resolve({
-        ...mockUser,
-        save: () => mockSave()
-      }));
-      MockMongooseModel.mockFindById.mockImplementation(() => ({
-        exec: (): any => MockMongooseModel.mockExec()
-      }));
-    });
+    let getResult = await usersDao.get(doc.id);
+    expectDocumentToEqual(getResult, doc, { excludeFields: ['password'] });
 
-    it('should successfully update user', async () => {
-      const user = await usersDao.update({ id: 'mock-user-id', ...mockUpdateUserPayload });
-      expect(MockMongooseModel.mockFindById).toHaveBeenCalled();
-      expect(mockSave).toHaveBeenCalled();
-      expect(user).toEqual(expect.objectContaining({
-        ...mockUser,
-        ...mockUpdateUserPayload
-      }));
-    });
+    const deleteResult = await usersDao.delete(new Types.ObjectId().toString());
+    expect(deleteResult).toEqual(null);
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should successfully update only users username', async () => {
-      const user = await usersDao.update({
-        id: 'id',
-        username: 'username'
-      });
-      expect(MockMongooseModel.mockFindById).toHaveBeenCalled();
-      expect(mockSave).toHaveBeenCalled();
-      expect(user).toEqual(expect.objectContaining({
-        ...mockUser,
-        username: 'username'
-      }));
-    });
-
-    it('should throw an error when user not found', async () => {
-      MockMongooseModel.mockExec.mockReturnValueOnce(Promise.resolve(null));
-      await expect(usersDao.update({ id: 'mock-user-id', ...mockUpdateUserPayload })).rejects.toThrow(RestApiException);
-    });
-
-    it('should throw an error when document.save() throw an error', async () => {
-      mockSave.mockRejectedValueOnce(new Error());
-      await expect(usersDao.update({ id: 'mock-user-id', ...mockUpdateUserPayload })).rejects.toThrowError();
-    });
-  });
-
-  describe('delete', () => {
-    it('should successfully delete user', async () => {
-      const deletedUserId = await usersDao.delete('user-id');
-      expect(MockMongooseModel.mockFindOneAndUpdate).toHaveBeenCalled();
-      expect(deletedUserId).toEqual('user-id');
-    });
-
-    it('should throw api error when deletedCount is 0', async () => {
-      MockMongooseModel.mockExec.mockReturnValueOnce(Promise.resolve(null));
-      await expect(usersDao.delete('user-id')).rejects.toThrow(RestApiException);
-    });
-
-    it('should throw an error when model.deleteOne throw an error', async () => {
-      MockMongooseModel.mockExec.mockRejectedValueOnce(new Error());
-      await expect(usersDao.get(mockUser.id)).rejects.toThrowError();
-    });
+    getResult = await usersDao.get(doc.id);
+    expectDocumentToEqual(getResult, doc, { excludeFields: ['password'] });
   });
 });

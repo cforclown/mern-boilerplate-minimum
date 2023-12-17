@@ -1,8 +1,8 @@
 import { RestApiException } from '../../utils';
 import { AuthService } from './auth.service';
-import { IUserContext } from './auth.types';
 import { mockRegisterUserPayload, mockUser as mockUserData } from '../../test/mock-users-data';
 import { container, setup } from '../../di-config';
+import { IUserContext } from './auth.schema';
 
 const mockUsersDaoAuthenticate = jest.fn();
 const mockUsersDaoGet = jest.fn();
@@ -159,7 +159,7 @@ describe('auth-service', () => {
 
     it('should throw an error when data access object throw an error', async () => {
       mockJwtVerify.mockReturnValueOnce(null);
-      await expect(authService.refresh('refresh-token')).rejects.toThrowError();
+      await expect(authService.refresh('refresh-token')).rejects.toThrow(Error);
       expect(mockJwtSign).not.toHaveBeenCalled();
     });
   });

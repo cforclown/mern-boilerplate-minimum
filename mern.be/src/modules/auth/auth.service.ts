@@ -1,6 +1,6 @@
 import { sign, verify } from 'jsonwebtoken';
 import { HttpStatusCode } from 'axios';
-import { ILoginPayload, IRegisterUserPayload, IUserContext } from '.';
+import { ILoginReq, IRegisterUserReq, IUserContext } from '.';
 import { IUser, UsersService } from '..';
 import { Environment, RestApiException } from '../../utils';
 
@@ -14,22 +14,23 @@ export class AuthService {
   }
 
   async getUserById (userId: string): Promise<IUser> {
-    const user = await this.usersService.get(userId);
+    const user = await this.usersService.get(userId, { plain: true });
     if (!user) {
       throw new RestApiException('User not found');
     }
     return user;
   }
 
-  async authenticate (payload: ILoginPayload): Promise<IUser | null> {
+  async authenticate (payload: ILoginReq): Promise<IUser | null> {
     return this.usersService.authenticate(payload);
   }
 
-  async login (payload: ILoginPayload): Promise<IUserContext> {
+  async login (payload: ILoginReq): Promise<IUserContext> {
     const user = await this.usersService.authenticate(payload);
     if (!user) {
       throw new RestApiException('Incorrect username or password', HttpStatusCode.NotFound);
     }
+
     return this.generateAccessToken(user);
   }
 
@@ -40,11 +41,13 @@ export class AuthService {
     return this.generateAccessToken(user);
   }
 
-  async register (payload: IRegisterUserPayload): Promise<IUserContext> {
+  async register (payload: IRegisterUserReq): Promise<IUserContext> {
     if (payload.password !== payload.confirmPassword) {
       throw new RestApiException('Confirm password is not match');
     }
+
     const user = await this.usersService.create(payload);
+
     return this.generateAccessToken(user);
   }
 
@@ -55,6 +58,7 @@ export class AuthService {
       if (!user) {
         throw new RestApiException('Refresh token is not valid', HttpStatusCode.Unauthorized);
       }
+
       return this.generateAccessToken(user);
     } catch (err) {
       throw new RestApiException('Refresh token is expired', HttpStatusCode.Unauthorized);
@@ -77,8 +81,12 @@ export class AuthService {
 
   generateAccessToken (user: IUser): IUserContext {
     const expiresIn = Environment.getAccessTokenExpIn();
-    const accessToken = sign({ ...user.toJSON() }, Environment.getAccessTokenSecret(), { expiresIn });
-    const refreshToken = sign({ ...user.toJSON() }, Environment.getRefreshTokenSecret(), { expiresIn: Environment.getRefreshTokenExpIn() });
+    const accessToken = sign(user, Environment.getAccessTokenSecret(), { expiresIn });
+    const refreshToken = sign(
+      user,
+      Environment.getRefreshTokenSecret(),
+      { expiresIn: Environment.getRefreshTokenExpIn() }
+    );
 
     return {
       user,

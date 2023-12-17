@@ -20,7 +20,10 @@ describe('users-data-transfer-object', () => {
     });
 
     it('should throw validation exception when payload is not valid', () => {
-      expect(() => validateSchema({ schema: UpdateUserPayloadSchema, payload: { invalidField: 'invalid field value' } })).toThrow(ValidationException);
+      expect(() => validateSchema({
+        schema: UpdateUserPayloadSchema,
+        payload: { invalidField: 'invalid field value' }
+      })).toThrow(ValidationException);
     });
 
     it('should throw validation exception when payload is not object', () => {
@@ -37,7 +40,10 @@ describe('users-data-transfer-object', () => {
     });
 
     it('should throw validation exception when payload is not valid', () => {
-      expect(() => validateSchema({ schema: ChangePasswordPayloadSchema, payload: { invalidField: 'invalid field value' } })).toThrow(ValidationException);
+      expect(() => validateSchema({
+        schema: ChangePasswordPayloadSchema,
+        payload: { invalidField: 'invalid field value' }
+      })).toThrow(ValidationException);
     });
 
     it('should throw validation exception when payload is not object', () => {

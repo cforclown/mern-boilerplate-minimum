@@ -1,9 +1,9 @@
 import { AuthSwaggerSchemas, SchedulesSwaggerSchemas, UsersSwaggerSchemas } from '../modules';
-import { ExplorationSwaggerSchemas, PaginationPayloadSwaggerSchemas } from '../utils';
+import { ExplorationSwaggerSchemas, PaginationReqSwaggerSchemas } from '../utils';
 
 const schemas = Object.assign(
   { ...ExplorationSwaggerSchemas },
-  { ...PaginationPayloadSwaggerSchemas },
+  { ...PaginationReqSwaggerSchemas },
   { ...AuthSwaggerSchemas },
   { ...UsersSwaggerSchemas },
   { ...SchedulesSwaggerSchemas }

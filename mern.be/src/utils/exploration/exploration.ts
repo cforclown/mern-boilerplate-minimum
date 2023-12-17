@@ -1,26 +1,26 @@
 import Joi from 'joi';
-import { IPaginationPayload, IPaginationResponse, PaginationDto, PaginationPayloadSwaggerSchemas } from './pagination';
+import { IPaginationReq, IPaginationRes, PaginationReq, PaginationReqSwaggerSchemas } from './pagination';
 
-export interface IExplorationPayload {
+export interface IExplorationReq {
   query?: string;
-  pagination: IPaginationPayload;
+  pagination: IPaginationReq;
 }
 
-export interface IExplorationResponse<T> {
+export interface IExplorationRes<T> {
   data: T[],
-  exploration: IExplorationPayload & {
-    pagination: IPaginationResponse
+  exploration: IExplorationReq & {
+    pagination: IPaginationRes
   }
 }
 
-export const ExplorationPayloadSchema = Joi.object({
+export const ExplorationReqSchema = Joi.object<IExplorationReq>({
   query: Joi.string().allow(null, '').default(null),
-  pagination: PaginationDto.required()
+  pagination: PaginationReq.required()
 });
 
 export const ExplorationSwaggerSchemas = {
-  explorationPayload: {
+  explorationReq: {
     query: { type: 'string' },
-    pagination: { ...PaginationPayloadSwaggerSchemas }
+    pagination: { ...PaginationReqSwaggerSchemas }
   }
 };

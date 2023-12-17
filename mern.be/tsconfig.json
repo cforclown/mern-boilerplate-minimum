@@ -9,9 +9,8 @@
     ".vscode"
   ],
   "compilerOptions": {
-    "target": "es2021",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "target": "ESNext",
+    "module": "NodeNext",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "sourceMap": true,

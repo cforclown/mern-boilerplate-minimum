@@ -1,5 +1,5 @@
-import { IChangePasswordPayload, ICreateUserPayload, IUpdateUserPayload, IUser, UsersDao } from '.';
-import { ILoginPayload } from '../auth';
+import { IChangePasswordPayload, ICreateUserPayload, IUpdateUserPayload, IUser, IUserDaoOpts, IUserRes, UsersDao } from '.';
+import { ILoginReq } from '../auth';
 import { hashPassword, RestApiException } from '../../utils';
 
 export class UsersService {
@@ -10,15 +10,15 @@ export class UsersService {
     this.usersDao = usersDao;
   }
 
-  async authenticate ({ username, password }: ILoginPayload): Promise<IUser | null> {
+  async authenticate ({ username, password }: ILoginReq): Promise<IUserRes | null> {
     return this.usersDao.authenticate({
       username,
       password: (await hashPassword(password))
-    });
+    }, { plain: true });
   }
 
-  get (userId: string): Promise<IUser | null> {
-    return this.usersDao.get(userId);
+  get (userId: string, opts?: IUserDaoOpts): Promise<IUser | null> {
+    return this.usersDao.get(userId, opts);
   }
 
   getAll (): Promise<IUser[]> {
@@ -37,10 +37,10 @@ export class UsersService {
       throw new RestApiException('Email already registered');
     }
 
-    return this.usersDao.create(payload);
+    return this.usersDao.create(payload, { plain: true });
   }
 
-  async update (userId: string, payload: IUpdateUserPayload): Promise<IUser> {
+  async update (userId: string, payload: IUpdateUserPayload): Promise<IUser | null> {
     const [user, isUsernameTaken, isEmailRegistered] = await Promise.all([
       this.usersDao.get(userId),
       payload.username ? this.usersDao.getByUsername(payload.username) : false,
@@ -59,12 +59,15 @@ export class UsersService {
     return this.usersDao.update({ id: userId, ...payload });
   }
 
-  async changePassword (userId: string, payload: IChangePasswordPayload): Promise<IUser> {
-    const user = await this.usersDao.get(userId, { withPassword: true });
+  async changePassword (userId: string, payload: IChangePasswordPayload): Promise<IUserRes | null> {
+    const user = await this.usersDao.get(userId);
     if (!user) {
       throw new RestApiException('User not found');
     }
-    if (user.password !== (await hashPassword(payload.currentPassword))) {
+    if (!(await this.usersDao.authenticate({
+      username: user.username,
+      password: (await hashPassword(payload.currentPassword))
+    }))) {
       throw new RestApiException('Invalid password');
     }
 
@@ -74,7 +77,7 @@ export class UsersService {
     });
   }
 
-  delete (userId: string): Promise<string> {
+  delete (userId: string): Promise<string | null> {
     return this.usersDao.delete(userId);
   }
 }

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { HttpStatusCode } from 'axios';
 import { UsersService } from './users.service';
-import { IUser } from './users.types';
+import { IUser } from './users.schema';
 import { RestApiException } from '../../utils';
 
 export class UsersController {
@@ -31,14 +31,29 @@ export class UsersController {
   }
 
   async update ({ user, body }: Request): Promise<IUser> {
-    return this.usersService.update((user as IUser).id, body);
+    const updatedUser = await this.usersService.update((user as IUser).id, body);
+    if (!updatedUser) {
+      throw new RestApiException('User not found');
+    }
+
+    return updatedUser;
   }
 
   async changePassword ({ user, body }: Request): Promise<IUser> {
-    return this.usersService.changePassword((user as IUser).id, body);
+    const result = await this.usersService.changePassword((user as IUser).id, body);
+    if (!result) {
+      throw new RestApiException('User not found');
+    }
+
+    return result;
   }
 
   async delete ({ params }: Request): Promise<string> {
-    return this.usersService.delete(params.id);
+    const result = await this.usersService.delete(params.id);
+    if (!result) {
+      throw new RestApiException('User not found');
+    }
+
+    return result;
   }
 }

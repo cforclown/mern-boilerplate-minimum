@@ -1,9 +1,9 @@
 import { validateSchema, ValidationException } from '../../utils';
 import { LoginPayloadSchema, RefreshTokenPayloadSchema } from './auth.dto';
-import { ILoginPayload } from './auth.types';
+import { ILoginReq } from './auth.types';
 
 describe('auth-data-transfer-object', () => {
-  const loginPayload: ILoginPayload = {
+  const loginPayload: ILoginReq = {
     username: 'username',
     password: 'password'
   };

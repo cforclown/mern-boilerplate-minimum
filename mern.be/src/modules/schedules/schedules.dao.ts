@@ -1,7 +1,7 @@
-import { ISchedule } from './schedules.types';
+import { ISchedule } from '.';
 import { BaseDataAccessObject } from '../../utils/base/base-dao-mongo';
 import { model } from 'mongoose';
-import { IExplorationPayload, IExplorationResponse } from '../../utils';
+import { IExplorationReq, IExplorationRes } from '../../utils';
 
 export class SchedulesDao extends BaseDataAccessObject<ISchedule> {
   public static readonly INSTANCE_NAME = 'schedulesDao';
@@ -11,7 +11,7 @@ export class SchedulesDao extends BaseDataAccessObject<ISchedule> {
     super(model<ISchedule>(SchedulesDao.MODEL_NAME));
   }
 
-  async explore ({ query, pagination }: IExplorationPayload): Promise<IExplorationResponse<ISchedule>> {
+  async explore ({ query, pagination }: IExplorationReq): Promise<IExplorationRes<ISchedule>> {
     const result = await this.model
       .aggregate([
         {

@@ -1,15 +1,30 @@
+
 export function docToJSON (doc: any): Record<string, any> {
   return JSON.parse(JSON.stringify(doc));
 }
 
-export function expectDocumentToEqual (doc: any, expectedDoc: any, ignoreTimestamp?: boolean): void {
+interface IExpectDocToEqualOpt {
+  ignoreTimestamp?: boolean;
+  excludeFields?: string[];
+}
+export function expectDocumentToEqual (
+  doc: any,
+  toEqual: any,
+  opt?: IExpectDocToEqualOpt
+): void {
   const rawDoc = docToJSON(doc);
-  const rawExpectedDoc = docToJSON(expectedDoc);
+  const toEqualRaw = docToJSON(toEqual);
 
-  if (ignoreTimestamp) {
-    delete rawExpectedDoc.createdAt;
-    delete rawExpectedDoc.updatedAt;
+  if (opt?.ignoreTimestamp) {
+    delete toEqualRaw.createdAt;
+    delete toEqualRaw.updatedAt;
+  }
+  if (opt?.excludeFields?.length) {
+    opt.excludeFields.forEach(field => {
+      delete rawDoc[field];
+      delete toEqualRaw[field];
+    });
   }
 
-  expect(rawDoc).toMatchObject(rawExpectedDoc);
+  expect(rawDoc).toMatchObject(toEqualRaw);
 }

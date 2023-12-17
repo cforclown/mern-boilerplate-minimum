@@ -21,7 +21,7 @@ describe('schedules-dao', () => {
     await db.close();
   });
 
-  it('create -> get => getAll', async () => {
+  it('create -> get, getAll', async () => {
     const doc = await schedulesDao.create(mockCreateSchedulePayload);
     expectDocumentToEqual(doc, {
       ...mockCreateSchedulePayload,
@@ -46,7 +46,7 @@ describe('schedules-dao', () => {
     });
 
     const updateResult = await schedulesDao.update({ id: doc.id, name: 'new name' });
-    expectDocumentToEqual(updateResult, { ...docToJSON(doc), name: 'new name' }, true);
+    expectDocumentToEqual(updateResult, { ...docToJSON(doc), name: 'new name' }, { ignoreTimestamp: true });
 
     const getResult = await schedulesDao.get(doc.id);
     expectDocumentToEqual(getResult, updateResult);
