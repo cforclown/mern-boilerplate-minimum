@@ -10,17 +10,17 @@ export interface IPaginationSort {
   order: IPaginationSortOrders;
 }
 
-export interface IPaginationPayload {
+export interface IPaginationReq {
   page: number;
   limit: number;
   sort: IPaginationSort;
 }
 
-export interface IPaginationResponse extends IPaginationPayload {
+export interface IPaginationRes extends IPaginationReq {
   pageCount: number;
 }
 
-export const PaginationDto = Joi.object({
+export const PaginationReq = Joi.object<IPaginationReq>({
   page: Joi.number().required(),
   limit: Joi.number().required(),
   sort: Joi.object({
@@ -29,7 +29,7 @@ export const PaginationDto = Joi.object({
   })
 });
 
-export const PaginationPayloadSwaggerSchemas = {
+export const PaginationReqSwaggerSchemas = {
   paginationPayload: {
     page: { type: 'number', required: true },
     limit: { type: 'number', required: true },

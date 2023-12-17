@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import { AUTH_BASE_API_PATH, authenticateRequest, SCHEDULES_BASE_API_PATH, USERS_BASE_API_PATH } from '../../../modules';
+import {
+  AUTH_BASE_API_PATH,
+  authenticateRequest,
+  SCHEDULES_BASE_API_PATH,
+  USERS_BASE_API_PATH
+} from '../../../modules';
 import { Environment } from '../../../utils';
 
 export function ApiRouter (authRouter: Router, usersRouter: Router, schedulesRouter: Router): Router {

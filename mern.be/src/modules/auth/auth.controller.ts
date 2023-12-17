@@ -2,8 +2,8 @@ import express from 'express';
 import { AuthService, IUserContext } from '.';
 import { IUser } from '..';
 import { Environment, RestApiException } from '../../utils';
-import { HttpStatusCode } from 'axios';
 import { verify } from 'jsonwebtoken';
+import { HttpStatusCode } from 'axios';
 
 export class AuthController {
   public static readonly INSTANCE_NAME = 'authController';

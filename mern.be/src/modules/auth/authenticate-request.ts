@@ -13,7 +13,10 @@ export function authenticateRequest (excludePaths: IExcludePath[]) {
   return (req: Request, res: Response, next: NextFunction): any => {
     try {
       for (const excludePath of excludePaths) {
-        if (req.originalUrl.includes(excludePath.path) && (!excludePath.method || (excludePath.method === req.method))) {
+        if (
+          req.originalUrl.includes(excludePath.path) &&
+          (!excludePath.method || (excludePath.method === req.method))
+        ) {
           return next();
         }
       }

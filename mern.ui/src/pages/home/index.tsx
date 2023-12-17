@@ -30,14 +30,14 @@ function Home({ className }: IHome): JSX.Element {
       window.removeEventListener('resize', onresize);
       ismounted.current = false;
     };
-  }, []);
+  }, [layoutState.isSm]);
 
   const onresize = (): void => {
     const currentWidth = window.innerWidth;
     setSidebarCollapsed(currentWidth <= MD_BREAKPOINT);
-    if (currentWidth <= SM_BREAKPOINT && !layoutState.isSM) {
+    if (currentWidth <= SM_BREAKPOINT && !layoutState.isSm) {
       setLayoutIsSM(true);
-    } else if (currentWidth > SM_BREAKPOINT && layoutState.isSM) {
+    } else if (currentWidth > SM_BREAKPOINT && layoutState.isSm) {
       setLayoutIsSM(false);
     }
   };
@@ -63,7 +63,7 @@ function Home({ className }: IHome): JSX.Element {
       }
     >
       <Sidebar 
-        collapsed={layoutState.isSM ? false : layoutState.sidebarState.collapsed} 
+        collapsed={layoutState.isSm ? false : layoutState.sidebarState.collapsed} 
         hidden={layoutState.sidebarState.hidden} 
         onBreakpoint={setSidebarHidden} 
         onBackdropClick={() => setSidebarHidden(true)} 

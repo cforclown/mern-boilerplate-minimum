@@ -1,6 +1,37 @@
 import { Schema } from 'mongoose';
 import { hashPassword } from '../../utils';
 
+export interface IUser extends Document {
+  _id: string;
+  id: string;
+  username: string;
+  email: string;
+  password?: string;
+  fullname: string;
+}
+
+export interface IUserRes extends Omit<IUser, 'password'> {}
+
+export interface ICreateUserPayload {
+  username: string;
+  email: string;
+  password?: string;
+  fullname: string;
+};
+
+export interface IUpdateUserPayload {
+  username?: string;
+  email?: string;
+  password?: string;
+  fullname?: string;
+}
+
+export interface IChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
 export const usersSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
@@ -24,6 +55,11 @@ usersSchema.virtual('id').get(function () {
 
 // Ensure virtual fields are serialised.
 usersSchema.set('toJSON', {
+  virtuals: true
+});
+
+// Ensure virtual fields are serialised.
+usersSchema.set('toObject', {
   virtuals: true
 });
 

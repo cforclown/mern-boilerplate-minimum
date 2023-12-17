@@ -73,6 +73,12 @@
       "error",
       1
     ],
+    "max-len": [
+      "error",
+      {
+        "code": 160
+      }
+    ],
     "no-cond-assign": [
       "error",
       "except-parens"

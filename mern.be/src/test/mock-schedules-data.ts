@@ -1,5 +1,5 @@
 import { ICreateSchedulePayload, ISchedule, IUpdateSchedulePayload } from '../modules';
-import { IExplorationPayload } from '../utils/exploration/exploration';
+import { IExplorationReq } from '../utils/exploration/exploration';
 
 export const mockSchedule: ISchedule = {
   _id: 'schedule-id',
@@ -26,7 +26,7 @@ export const mockUpdateSchedulePayload: IUpdateSchedulePayload = {
   desc: 'schedule description'
 };
 
-export const mockExplorationPayload: IExplorationPayload = {
+export const mockExplorationPayload: IExplorationReq = {
   query: 'query',
   pagination: {
     page: 1,

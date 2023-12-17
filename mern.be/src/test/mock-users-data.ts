@@ -1,4 +1,4 @@
-import { IChangePasswordPayload, ICreateUserPayload, IRegisterUserPayload, IUpdateUserPayload } from '../modules';
+import { IChangePasswordPayload, ICreateUserPayload, IRegisterUserReq, IUpdateUserPayload } from '../modules';
 
 export const mockUser: any = {
   _id: 'user-id',
@@ -10,7 +10,7 @@ export const mockUser: any = {
 
 export const mockUserWithPassword = {
   ...mockUser,
-  // 'mock-password'
+  // eslint-disable-next-line max-len
   password: '439869c8bb4abb0d5cf0d922073d7830200401a9479c0f72de4b4b6b48ecd11c285df93dfab64468061ab613a3070cb80348abf6ec652db60ab9805705fb7f98'
 };
 
@@ -33,7 +33,7 @@ export const mockChangePasswordPayload: IChangePasswordPayload = {
   confirmNewPassword: '1MockNewPassword!'
 };
 
-export const mockRegisterUserPayload: IRegisterUserPayload = {
+export const mockRegisterUserPayload: IRegisterUserReq = {
   username: 'username',
   email: 'email@email.com',
   fullname: 'fullname',

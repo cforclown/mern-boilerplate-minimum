@@ -28,7 +28,12 @@ export const RegisterPayloadSchema = Joi.object({
   email: Joi.string().email().required(),
   fullname: Joi.string().required(),
   password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?!.* ).{8,24}$/).required(),
-  confirmPassword: Joi.any().valid(Joi.ref('password')).required().options({ messages: { 'any.only': '{{#label}} does not match' } })
+  confirmPassword: Joi.any()
+    .valid(Joi.ref('password'))
+    .required()
+    .options({
+      messages: { 'any.only': '{{#label}} does not match' }
+    })
 });
 
 export const RefreshTokenPayloadSchema = Joi.object({

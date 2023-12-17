@@ -1,5 +1,5 @@
 import { ISchedule, SchedulesDao } from '.';
-import { IExplorationPayload, IExplorationResponse } from '../../utils';
+import { IExplorationReq, IExplorationRes } from '../../utils';
 import { BaseService } from '../../utils/base/base-service';
 
 export class SchedulesService extends BaseService<ISchedule> {
@@ -13,7 +13,7 @@ export class SchedulesService extends BaseService<ISchedule> {
     this.schedulesDao = schedulesDao;
   }
 
-  async explore (payload: IExplorationPayload): Promise<IExplorationResponse<ISchedule>> {
+  async explore (payload: IExplorationReq): Promise<IExplorationRes<ISchedule>> {
     return this.schedulesDao.explore(payload);
   }
 }

@@ -1,3 +1,29 @@
+import { IUser } from '..';
+
+export interface IUserContext {
+  user: IUser;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+export interface ILoginReq {
+  username: string;
+  password: string;
+}
+
+export interface IRegisterUserReq {
+  username: string;
+  email: string;
+  fullname: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface IRefreshTokenReq {
+  refreshToken: string;
+}
+
 export const AuthSwaggerSchemas = {
   login: {
     type: 'object',

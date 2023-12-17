@@ -32,7 +32,7 @@ describe('env-config', () => {
 
   it('should throw error when NODE_ENV value is invalid', () => {
     process.env.NODE_ENV = 'invalid env value';
-    expect(config).toThrowError();
+    expect(config).toThrow(Error);
   });
 
   it('should call dotenv config without providing NODE_ENV value', () => {
@@ -69,7 +69,7 @@ describe('env-config', () => {
     mockFsExistsSync.mockImplementationOnce((filename: string) => mockExistsFile.includes(filename));
 
     process.env.NODE_ENV = '';
-    expect(config).toThrowError('No env file found!');
+    expect(config).toThrow(Error('No env file found!'));
   });
 
   it('should call dotenvConfig without path specified with warning message', () => {
