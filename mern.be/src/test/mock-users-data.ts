@@ -1,4 +1,9 @@
-import { IChangePasswordPayload, ICreateUserPayload, IRegisterUserReq, IUpdateUserPayload } from '../modules';
+import {
+  IChangePasswordPayload,
+  ICreateUserPayload,
+  IRegisterUserReq,
+  IUpdateUserPayload
+} from '@modules';
 
 export const mockUser: any = {
   _id: 'user-id',

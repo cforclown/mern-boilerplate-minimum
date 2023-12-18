@@ -1,8 +1,7 @@
 import { Request } from 'express';
 import { HttpStatusCode } from 'axios';
-import { UsersService } from './users.service';
-import { IUser } from './users.schema';
-import { RestApiException } from '../../utils';
+import { RestApiException } from '@utils';
+import { IUser, UsersService } from '.';
 
 export class UsersController {
   public static readonly INSTANCE_NAME = 'usersController';

@@ -1,7 +1,6 @@
 import { ISchedule } from '.';
-import { BaseDataAccessObject } from '../../utils/base/base-dao-mongo';
+import { BaseDataAccessObject, IExplorationReq, IExplorationRes } from '@utils';
 import { model } from 'mongoose';
-import { IExplorationReq, IExplorationRes } from '../../utils';
 
 export class SchedulesDao extends BaseDataAccessObject<ISchedule> {
   public static readonly INSTANCE_NAME = 'schedulesDao';

@@ -1,5 +1,9 @@
-import { ICreateSchedulePayload, ISchedule, IUpdateSchedulePayload } from '../modules';
-import { IExplorationReq } from '../utils/exploration/exploration';
+import {
+  ICreateSchedulePayload,
+  ISchedule,
+  IUpdateSchedulePayload
+} from '@modules';
+import { IExplorationReq } from '@utils';
 
 export const mockSchedule: ISchedule = {
   _id: 'schedule-id',

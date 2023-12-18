@@ -1,6 +1,4 @@
-import { Schema } from 'mongoose';
 import Joi from 'joi';
-import { WithRequired } from '@utils';
 
 export interface ISchedule {
   _id: string;
@@ -11,35 +9,14 @@ export interface ISchedule {
   desc?: string;
 }
 
-export type ICreateSchedulePayload = Omit<ISchedule, '_id' | 'id'>;
-
-export type IUpdateSchedulePayload = WithRequired<Partial<ISchedule>, '_id' | 'id'>;
-
-export const schedulesSchema = new Schema<ISchedule>({
-  name: { type: String, required: true },
-  start: { type: Date, required: true },
-  end: { type: Date, required: false, default: null },
-  desc: { type: String, required: false, default: null }
-});
-
-// virtualize _id to id when doing query
-schedulesSchema.virtual('id').get(function () {
-  return this._id.toString();
-});
-
-// Ensure virtual fields are serialised.
-schedulesSchema.set('toJSON', {
-  virtuals: true
-});
-
-export const CreateSchedulePayloadSchema = Joi.object({
+export const createScheduleReqSchema = Joi.object({
   name: Joi.string().required(),
   start: Joi.date().required(),
   end: Joi.date().allow('').default(null),
   desc: Joi.string().allow('').default(null)
 });
 
-export const UpdateSchedulePayloadSchema = Joi.object({
+export const updateScheduleReqSchema = Joi.object({
   id: Joi.string().required(),
   _id: Joi.string(),
   name: Joi.string(),
@@ -48,7 +25,7 @@ export const UpdateSchedulePayloadSchema = Joi.object({
   desc: Joi.string().allow('').default(null)
 });
 
-export const SchedulesSwaggerSchemas = {
+export const schedulesSwagger = {
   createSchedule: {
     type: 'object',
     properties: {

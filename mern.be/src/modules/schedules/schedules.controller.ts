@@ -1,8 +1,6 @@
 import { Request } from 'express';
-import { ISchedule } from '.';
-import { BaseController } from '../../utils/base/base-controller';
-import { SchedulesService } from './schedules.service';
-import { IExplorationRes } from '../../utils';
+import { BaseController, IExplorationRes } from '@utils';
+import { ISchedule, SchedulesService } from '.';
 
 export class SchedulesController extends BaseController<ISchedule> {
   public static readonly INSTANCE_NAME = 'schedulesController';

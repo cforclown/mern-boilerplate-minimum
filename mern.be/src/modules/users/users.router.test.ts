@@ -1,9 +1,8 @@
 import request from 'supertest';
-import { container, setup } from '../../di-config';
-import { mockUpdateUserPayload, mockUser } from '../../test/mock-users-data';
-import { RestApiException } from '../../utils/exceptions';
 import { HttpStatusCode } from 'axios';
-import { Environment } from '../../utils';
+import { container, setup } from '../../di-config';
+import { Environment, RestApiException } from '@utils';
+import { mockUpdateUserPayload, mockUser } from '../../test/mock-users-data';
 
 const mockJWTVerify = jest.fn();
 jest.mock('jsonwebtoken', () => ({

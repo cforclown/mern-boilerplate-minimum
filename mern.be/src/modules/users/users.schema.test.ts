@@ -1,5 +1,5 @@
-import { validateSchema, ValidationException } from '../../utils';
-import { ChangePasswordPayloadSchema, UpdateUserPayloadSchema } from './users.dto';
+import { validateSchema, ValidationException } from '@utils';
+import { ChangePasswordPayloadSchema, UpdateUserPayloadSchema } from '.';
 import { mockChangePasswordPayload, mockUpdateUserPayload } from '../../test/mock-users-data';
 
 describe('users-data-transfer-object', () => {

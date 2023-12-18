@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { SchedulesController } from './schedules.controller';
-import { ExplorationReqSchema, RequestHandler, validateBody, validateParams } from '../../utils';
-import { CreateSchedulePayloadSchema, UpdateSchedulePayloadSchema } from './schedules.dto';
+import { CreateSchedulePayloadSchema, SchedulesController, UpdateSchedulePayloadSchema } from '.';
+import { ExplorationReqSchema, RequestHandler, validateBody, validateParams } from '@utils';
 import { idSchema } from '../../schemas';
 
 export const SCHEDULES_ROUTER_INSTANCE_NAME = 'schedulesRouter';

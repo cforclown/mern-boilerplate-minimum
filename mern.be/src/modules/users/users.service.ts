@@ -1,6 +1,6 @@
+import { hashPassword, RestApiException } from '@utils';
 import { IChangePasswordPayload, ICreateUserPayload, IUpdateUserPayload, IUser, IUserDaoOpts, IUserRes, UsersDao } from '.';
-import { ILoginReq } from '../auth';
-import { hashPassword, RestApiException } from '../../utils';
+import { ILoginReq } from '@modules';
 
 export class UsersService {
   public static readonly INSTANCE_NAME = 'usersService';

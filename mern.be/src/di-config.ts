@@ -14,7 +14,7 @@ import {
   UsersDao,
   UsersRouter,
   UsersService
-} from './modules';
+} from '@modules';
 import App from './app';
 import Database from './database';
 import { MainRouter } from './app/routers';

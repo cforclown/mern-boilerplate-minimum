@@ -1,5 +1,5 @@
+import { hashPassword } from '@utils';
 import { IUser, UsersDao, usersSchema } from '.';
-import { hashPassword } from '../../utils';
 import { mockCreateUserPayload } from '../../test/mock-users-data';
 import MockDB from '../../test/mock-db';
 import { model, Types } from 'mongoose';

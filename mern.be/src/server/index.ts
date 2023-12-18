@@ -1,9 +1,9 @@
 import { Express } from 'express';
+import { asValue } from 'awilix';
 import Database from '../database';
 import { container } from '../di-config';
-import { Environment, Logger } from '../utils';
+import { Environment, Logger } from '@utils';
 import initSocketIO from '../socketio';
-import { asValue } from 'awilix';
 import SIOController from '../socketio/sio.controller';
 
 export default class Server {

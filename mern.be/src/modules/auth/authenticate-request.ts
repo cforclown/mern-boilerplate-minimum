@@ -2,7 +2,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode, Method } from 'axios';
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError, verify } from 'jsonwebtoken';
-import { dro, ELogLevel, Environment, Logger } from '../../utils';
+import { dro, ELogLevel, Environment, Logger } from '@utils';
 
 export interface IExcludePath {
   path: string;

@@ -8,8 +8,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import passport from 'passport';
 import swaggerUI from 'swagger-ui-express';
 import swaggerConfig from '../swagger';
-import { AuthService, InitLocalStrategy } from '../modules';
-import { Environment, isProduction } from '../utils';
+import { AuthService, InitLocalStrategy } from '@modules';
+import { Environment, isProduction } from '@utils';
 
 function App (authService: AuthService, mainRouter: Router): Express {
   const app = express();

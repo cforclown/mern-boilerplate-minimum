@@ -1,6 +1,5 @@
 import { ISchedule, SchedulesDao } from '.';
-import { IExplorationReq, IExplorationRes } from '../../utils';
-import { BaseService } from '../../utils/base/base-service';
+import { BaseService, IExplorationReq, IExplorationRes } from '@utils';
 
 export class SchedulesService extends BaseService<ISchedule> {
   public static readonly INSTANCE_NAME = 'schedulesService';

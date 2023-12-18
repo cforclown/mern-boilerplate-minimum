@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Environment } from '../../utils';
+import { Environment } from '@utils';
 
 export function MainRouter (apiRouter: Router): Router {
   const router = Router();

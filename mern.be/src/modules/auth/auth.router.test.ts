@@ -1,8 +1,8 @@
 import request from 'supertest';
-import { container, setup } from '../../di-config';
-import { mockRegisterUserPayload, mockUserApiRes as mockUserData } from '../../test/mock-users-data';
 import { HttpStatusCode } from 'axios';
-import { Environment } from '../../utils';
+import { container, setup } from '../../di-config';
+import { mockRegisterUserPayload, mockUser as mockUserData } from '../../test/mock-users-data';
+import { Environment } from '@utils';
 
 const mockJWTSign = jest.fn();
 const mockJWTVerify = jest.fn();

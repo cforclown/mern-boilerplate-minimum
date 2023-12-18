@@ -1,10 +1,9 @@
 import { Express } from 'express';
 import request from 'supertest';
-import { container, setup } from '../../di-config';
-import { mockExplorationPayload, mockSchedule, mockUpdateSchedulePayload } from '../../test/mock-schedules-data';
-import { RestApiException } from '../../utils/exceptions';
 import { HttpStatusCode } from 'axios';
-import { Environment } from '../../utils';
+import { container, setup } from '../../di-config';
+import { Environment, RestApiException } from '@utils';
+import { mockExplorationPayload, mockSchedule, mockUpdateSchedulePayload } from '../../test/mock-schedules-data';
 import { mockUser } from '../../test/mock-users-data';
 
 const mockJWTVerify = jest.fn();

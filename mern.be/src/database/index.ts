@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { Environment } from '../utils';
-import { schedulesSchema, usersSchema } from '../modules';
+import { Environment } from '@utils';
+import { schedulesSchema, usersSchema } from '@modules';
 
 class Database {
   public static readonly INSTANCE_NAME = 'database';

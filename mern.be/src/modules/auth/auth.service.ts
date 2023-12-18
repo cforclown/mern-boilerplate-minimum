@@ -1,8 +1,8 @@
 import { sign, verify } from 'jsonwebtoken';
 import { HttpStatusCode } from 'axios';
 import { ILoginReq, IRegisterUserReq, IUserContext } from '.';
-import { IUser, UsersService } from '..';
-import { Environment, RestApiException } from '../../utils';
+import { IUser, UsersService } from '@modules';
+import { Environment, RestApiException } from '@utils';
 
 export class AuthService {
   public static readonly INSTANCE_NAME = 'authService'

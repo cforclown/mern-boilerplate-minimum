@@ -1,9 +1,8 @@
 import express from 'express';
 import { HttpStatusCode } from 'axios';
 import passport from 'passport';
-import { dro, Environment, RequestHandler, validateBody } from '../../utils';
-import { LoginPayloadSchema, RefreshTokenPayloadSchema, RegisterPayloadSchema } from '.';
-import { AuthController } from './auth.controller';
+import { dro, Environment, RequestHandler, validateBody } from '@utils';
+import { AuthController, LoginPayloadSchema, RefreshTokenPayloadSchema, RegisterPayloadSchema } from '.';
 
 export const AUTH_ROUTER_INSTANCE_NAME = 'authRouter';
 export const AUTH_BASE_API_PATH = 'auth';

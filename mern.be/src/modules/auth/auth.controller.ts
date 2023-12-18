@@ -1,7 +1,7 @@
 import express from 'express';
 import { AuthService, IUserContext } from '.';
 import { IUser } from '..';
-import { Environment, RestApiException } from '../../utils';
+import { Environment, RestApiException } from '@utils';
 import { verify } from 'jsonwebtoken';
 import { HttpStatusCode } from 'axios';
 

@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { ObjectSchema } from 'joi';
-import { IUser } from '../modules';
-import { dro, Logger } from '../utils';
+import { dro, Logger } from '@utils';
+import { IUser } from '@modules';
 
 export interface ExtSocket extends Socket {
   userContext: { user: IUser };

@@ -1,5 +1,10 @@
 
-import { AuthService, IUser, IUserContext, UsersService } from '../modules';
+import {
+  AuthService,
+  IUser,
+  IUserContext,
+  UsersService
+} from '@modules';
 
 class SIOService {
   static readonly INSTANCE_NAME = 'sioService';

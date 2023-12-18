@@ -1,12 +1,12 @@
 import { container, setup } from '../../di-config';
-import { RestApiException } from '../../utils';
+import { RestApiException } from '@utils';
+import { UsersService } from '.';
 import {
   mockCreateUserPayload,
   mockUpdateUserPayload,
   mockUser,
   mockUserWithPassword
 } from '../../test/mock-users-data';
-import { UsersService } from './users.service';
 
 const mockUsersDaoAuthenticate = jest.fn();
 const mockUsersDaoGet = jest.fn();

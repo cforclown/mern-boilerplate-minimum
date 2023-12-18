@@ -1,6 +1,6 @@
-import { authenticateRequest, IExcludePath } from './authenticate-request';
 import { HttpStatusCode } from 'axios';
-import { dro } from '../../utils';
+import { dro } from '@utils';
+import { authenticateRequest, IExcludePath } from '.';
 import { mockUser } from '../../test/mock-users-data';
 
 const mockJWTVerify = jest.fn();

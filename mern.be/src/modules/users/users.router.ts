@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import { UsersController } from './users.controller';
-import { RequestHandler, validateBody, validateParams } from '../../utils';
+import { RequestHandler, validateBody, validateParams } from '@utils';
+import { UpdateUserPayloadSchema, UsersController } from '.';
 import { idSchema } from '../../schemas';
-import { UpdateUserPayloadSchema } from './users.dto';
 
 export const USERS_ROUTER_INSTANCE_NAME = 'usersRouter';
 export const USERS_BASE_API_PATH = 'users';

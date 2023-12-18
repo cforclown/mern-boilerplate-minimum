@@ -1,7 +1,7 @@
 import { HttpStatusCode } from 'axios';
 import { mockRequest, mockResponse } from 'jest-mock-req-res';
 import { validateBody, validateParams, validateQuery } from './validate-dto';
-import { LoginPayloadSchema } from '../modules';
+import { LoginPayloadSchema } from '@modules';
 import { idSchema } from '../schemas';
 
 describe('validate-dto', () => {

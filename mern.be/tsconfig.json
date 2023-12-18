@@ -8,6 +8,12 @@
     "build",
     ".vscode"
   ],
+  "ts-node": {
+    // Do not forget to `npm i -D tsconfig-paths`
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  },
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
@@ -19,8 +25,17 @@
     "rootDirs": [
       "src",
     ],
-    "outDir": "build",
+    "outDir": "dist",
     "declaration": true,
-    "strict": true
+    "strict": true,
+    "baseUrl": "src",
+    "paths": {
+      "@utils": [
+        "utils"
+      ],
+      "@modules": [
+        "modules"
+      ]
+    }
   }
 }

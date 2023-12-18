@@ -25,5 +25,11 @@ module.exports = {
   },
   testEnvironment: 'node',
   testTimeout: 99999,
-  setupFiles: ['<rootDir>/jestSetup.ts']
+  setupFiles: ['<rootDir>/jestSetup.ts'],
+  rootDir: '.',
+  roots: ['./src'],
+  moduleNameMapper: {
+    '@utils': '<rootDir>/src/utils',
+    '@modules': '<rootDir>/src/modules'
+  }
 };

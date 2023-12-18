@@ -3,8 +3,8 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { HttpStatusCode } from 'axios';
 import SIOService from './sio.service';
 import { ExtSocket } from './sio.utils';
-import { IUser } from '../modules';
-import { dro, Logger, RestApiException } from '../utils';
+import { dro, Logger, RestApiException } from '@utils';
+import { IUser } from '@modules';
 
 class SIOController {
   static readonly INSTANCE_NAME = 'sioController';

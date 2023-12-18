@@ -1,6 +1,31 @@
 import Joi from 'joi';
+import { IUser } from '../users';
 
-export const LoginPayloadSchema = Joi.object({
+export interface IUserContext {
+  user: IUser;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+export interface ILoginReq {
+  username: string;
+  password: string;
+}
+
+export interface IRegisterUserReq {
+  username: string;
+  email: string;
+  fullname: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface IRefreshTokenReq {
+  refreshToken: string;
+}
+
+export const loginReqSchema = Joi.object({
   username: Joi.alternatives().try(Joi.string(), Joi.string().email()).required(),
   password: Joi.string().required()
 });
@@ -23,7 +48,7 @@ export const LoginPayloadSchema = Joi.object({
  * - it must be 8-24 characters long.
  * - Usage of special character is optional.
  */
-export const RegisterPayloadSchema = Joi.object({
+export const registerReqSchema = Joi.object({
   username: Joi.string().regex(/^(?=[a-zA-Z0-9._]{6,24}$)(?!.*[_.]{2})[^_.].*[^_.]$/).required(),
   email: Joi.string().email().required(),
   fullname: Joi.string().required(),
@@ -36,6 +61,32 @@ export const RegisterPayloadSchema = Joi.object({
     })
 });
 
-export const RefreshTokenPayloadSchema = Joi.object({
+export const refreshTokenReqSchema = Joi.object({
   refreshToken: Joi.string().required()
 });
+
+export const authSwagger = {
+  login: {
+    type: 'object',
+    properties: {
+      username: { type: 'string', required: true },
+      password: { type: 'string', required: true }
+    }
+  },
+  register: {
+    type: 'object',
+    properties: {
+      username: { type: 'string', required: true },
+      email: { type: 'string', required: true },
+      fullname: { type: 'string', required: true },
+      password: { type: 'string', required: true },
+      confirmPassword: { type: 'string', required: true }
+    }
+  },
+  refreshToken: {
+    type: 'object',
+    properties: {
+      refreshToken: { type: 'string', required: true }
+    }
+  }
+};

@@ -4,8 +4,8 @@ import {
   authenticateRequest,
   SCHEDULES_BASE_API_PATH,
   USERS_BASE_API_PATH
-} from '../../../modules';
-import { Environment } from '../../../utils';
+} from '@modules';
+import { Environment } from '@utils';
 
 export function ApiRouter (authRouter: Router, usersRouter: Router, schedulesRouter: Router): Router {
   const router = Router();
